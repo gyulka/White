@@ -1,4 +1,3 @@
-
 import pygame
 
 if __name__ == '__main__':
@@ -13,18 +12,18 @@ if __name__ == '__main__':
     flags = {}
     stap = 0
     s = ''
-    mandalorian1 = pygame.image.load('mandalorian.png')
-    mandalorian1_move1 = pygame.image.load('mandalorian_move1.png')
-    mandalorian1_move2 = pygame.image.load('mandalorian_move2.png')
-    mandalorian1_shot = pygame.image.load('mandalorian_shot.png')
+    mandalorian1 = pygame.image.load('files/textures/main_charachter_1/mandalorian.png')
+    mandalorian1_move1 = pygame.image.load('files/textures/main_charachter_1/mandalorian_move1.png')
+    mandalorian1_move2 = pygame.image.load('files/textures/main_charachter_1/mandalorian_move2.png')
+    mandalorian1_shot = pygame.image.load('files/textures/main_charachter_1/mandalorian_shot.png')
 
-    mandalorian2_move1 = pygame.image.load('mandalorian_right_move1.png')
-    mandalorian2_move2 = pygame.image.load('mandalorian_right_move2.png')
-    mandalorian2_shot = pygame.image.load('mandalorian_right_shot.png')
+    mandalorian2_move1 = pygame.image.load('files/textures/main_charachter_1/mandalorian_right_move1.png')
+    mandalorian2_move2 = pygame.image.load('files/textures/main_charachter_1/mandalorian_right_move2.png')
+    mandalorian2_shot = pygame.image.load('files/textures/main_charachter_1/mandalorian_right_shot.png')
 
-    mandalorian3_move1 = pygame.image.load('mandalorian_left_move1.png')
-    mandalorian3_move2 = pygame.image.load('mandalorian_left_move2.png')
-    mandalorian3_shot = pygame.image.load('mandalorian_left_shot.png')
+    mandalorian3_move1 = pygame.image.load('files/textures/main_charachter_1/mandalorian_left_move1.png')
+    mandalorian3_move2 = pygame.image.load('files/textures/main_charachter_1/mandalorian_left_move2.png')
+    mandalorian3_shot = pygame.image.load('files/textures/main_charachter_1/mandalorian_left_shot.png')
     while running:
         # внутри игрового цикла ещё один цикл
         # приема и обработки сообщений
