@@ -5,8 +5,8 @@ if __name__ == '__main__':
     size = (1000, 1000)
     screen = pygame.display.set_mode(size)
     screen.fill((0, 0, 0))
-    pygame.draw.circle(screen, (255, 255, 255), (20, 20), 10)
-    pos = (20, 20)
+    size_character = (55, 80)
+    pos = (size[0] // 2 - size_character[0] // 2, size[1] // 2 - size_character[1] // 2)
     pygame.display.flip()
     running = True
     flags = {}
@@ -41,29 +41,34 @@ if __name__ == '__main__':
             if flags[i]:
                 image1 = mandalorian1_move1
                 image2 = mandalorian1_move2
+                check_and_break = False
                 if i == pygame.K_w:
-                    if pos[1] - 10 >= 20:
+                    if pos[1] - 1 >= 1:
                         screen.fill((0, 0, 0))
                         pos = (pos[0], pos[1] - 1)
+                        check_and_break = True
                 if i == pygame.K_a:
-                    if pos[0] - 10 >= 20:
+                    if pos[0] - 1 >= 1:
                         screen.fill((0, 0, 0))
                         pos = (pos[0] - 1, pos[1])
                         image1 = mandalorian3_move1
                         image2 = mandalorian3_move2
+                        check_and_break = True
                 if i == pygame.K_s:
-                    if pos[1] + 10 <= 980:
+                    if pos[1] < size[1] - size_character[1]:
                         screen.fill((0, 0, 0))
                         pos = (pos[0], pos[1] + 1)
                         image1 = mandalorian1_move1
                         image2 = mandalorian1_move2
+                        check_and_break = True
                 if i == pygame.K_d:
-                    if pos[0] + 10 <= 980:
+                    if pos[0] <= size[0] - size_character[0]:
                         screen.fill((0, 0, 0))
                         pos = (pos[0] + 1, pos[1])
                         image1 = mandalorian2_move1
                         image2 = mandalorian2_move2
-                if i:
+                        check_and_break = True
+                if i and check_and_break:
                     stap += 1
                     if stap <= 20:
                         screen.blit(image1, pos)
