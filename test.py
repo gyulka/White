@@ -65,9 +65,9 @@ if __name__ == '__main__':
                         image2 = mandalorian2_move2
                 if i:
                     stap += 1
-                    if stap <= 10:
+                    if stap <= 20:
                         screen.blit(image1, pos)
-                    elif stap <= 20:
+                    elif stap <= 40:
                         screen.blit(image2, pos)
                     else:
                         screen.blit(image2, pos)
