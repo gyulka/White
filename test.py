@@ -24,6 +24,9 @@ if __name__ == '__main__':
     mandalorian3_move1 = pygame.image.load('files/textures/main_charachter_1/mandalorian_left_move1.png')
     mandalorian3_move2 = pygame.image.load('files/textures/main_charachter_1/mandalorian_left_move2.png')
     mandalorian3_shot = pygame.image.load('files/textures/main_charachter_1/mandalorian_left_shot.png')
+
+    mandalorian4_move1 = pygame.image.load('files/textures/main_charachter_1/mandalorian_back_move1.png')
+    mandalorian4_move2 = pygame.image.load('files/textures/main_charachter_1/mandalorian_back_move2.png')
     while running:
         # внутри игрового цикла ещё один цикл
         # приема и обработки сообщений
@@ -46,6 +49,8 @@ if __name__ == '__main__':
                     if pos[1] - 1 >= 1:
                         screen.fill((0, 0, 0))
                         pos = (pos[0], pos[1] - 1)
+                        image1 = mandalorian4_move1
+                        image2 = mandalorian4_move2
                         check_and_break = True
                 if i == pygame.K_a:
                     if pos[0] - 1 >= 1:
