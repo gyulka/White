@@ -1,7 +1,64 @@
 import pygame
 
+
+def move():
+    global wait, pos, stap
+    for i in flags:
+        wait += 1
+        if flags[i]:
+            wait = 0
+            image1 = mandalorian1_move1
+            image2 = mandalorian1_move2
+            check_and_break = False
+            if i == pygame.K_w:
+                if pos[1] - 1 >= 1:
+                    screen.fill((0, 0, 0))
+                    pos = (pos[0], pos[1] - 1)
+                    image1 = mandalorian4_move1
+                    image2 = mandalorian4_move2
+                    check_and_break = True
+            if i == pygame.K_a:
+                if pos[0] - 1 >= 1:
+                    screen.fill((0, 0, 0))
+                    pos = (pos[0] - 1, pos[1])
+                    image1 = mandalorian3_move1
+                    image2 = mandalorian3_move2
+                    check_and_break = True
+            if i == pygame.K_s:
+                if pos[1] < size[1] - size_character[1]:
+                    screen.fill((0, 0, 0))
+                    pos = (pos[0], pos[1] + 1)
+                    image1 = mandalorian1_move1
+                    image2 = mandalorian1_move2
+                    check_and_break = True
+            if i == pygame.K_d:
+                if pos[0] <= size[0] - size_character[0]:
+                    screen.fill((0, 0, 0))
+                    pos = (pos[0] + 1, pos[1])
+                    image1 = mandalorian2_move1
+                    image2 = mandalorian2_move2
+                    check_and_break = True
+            if i and check_and_break:
+                stap += 1
+                if stap <= 20:
+                    screen.blit(image1, pos)
+                elif stap <= 40:
+                    screen.blit(image2, pos)
+                else:
+                    screen.blit(image2, pos)
+                    stap = 0
+        if wait >= 50:
+            screen.fill((0, 0, 0))
+            screen.blit(mandalorian1, pos)
+
+
+def shoot(pos1, pos2):
+    shoot_coord.append([[pos1[0], pos1[1]], [pos2[0], pos2[1]], 0])
+
+
 if __name__ == '__main__':
     pygame.init()
+    shoot_coord = list()
     size = (1000, 1000)
     screen = pygame.display.set_mode(size)
     screen.fill((0, 0, 0))
@@ -12,6 +69,7 @@ if __name__ == '__main__':
     flags = {}
     stap = 0
     s = ''
+    wait = 0
     mandalorian1 = pygame.image.load('files/textures/main_charachter_1/mandalorian.png')
     mandalorian1_move1 = pygame.image.load('files/textures/main_charachter_1/mandalorian_move1.png')
     mandalorian1_move2 = pygame.image.load('files/textures/main_charachter_1/mandalorian_move2.png')
@@ -27,60 +85,26 @@ if __name__ == '__main__':
 
     mandalorian4_move1 = pygame.image.load('files/textures/main_charachter_1/mandalorian_back_move1.png')
     mandalorian4_move2 = pygame.image.load('files/textures/main_charachter_1/mandalorian_back_move2.png')
+    screen.blit(mandalorian1, pos)
     while running:
-        # внутри игрового цикла ещё один цикл
-        # приема и обработки сообщений
         for event in pygame.event.get():
-            # при закрытии окна
             if event.type == pygame.QUIT:
                 running = False
+            if event.type == pygame.MOUSEBUTTONDOWN:
+                shoot(event.pos, pos)
             if event.type == pygame.KEYDOWN:
                 flags[event.key] = True
             if event.type == pygame.KEYUP:
                 flags[event.key] = False
-        screen.fill((0, 0, 0))
-        screen.blit(mandalorian1, pos)
-        for i in flags:
-            if flags[i]:
-                image1 = mandalorian1_move1
-                image2 = mandalorian1_move2
-                check_and_break = False
-                if i == pygame.K_w:
-                    if pos[1] - 1 >= 1:
-                        screen.fill((0, 0, 0))
-                        pos = (pos[0], pos[1] - 1)
-                        image1 = mandalorian4_move1
-                        image2 = mandalorian4_move2
-                        check_and_break = True
-                if i == pygame.K_a:
-                    if pos[0] - 1 >= 1:
-                        screen.fill((0, 0, 0))
-                        pos = (pos[0] - 1, pos[1])
-                        image1 = mandalorian3_move1
-                        image2 = mandalorian3_move2
-                        check_and_break = True
-                if i == pygame.K_s:
-                    if pos[1] < size[1] - size_character[1]:
-                        screen.fill((0, 0, 0))
-                        pos = (pos[0], pos[1] + 1)
-                        image1 = mandalorian1_move1
-                        image2 = mandalorian1_move2
-                        check_and_break = True
-                if i == pygame.K_d:
-                    if pos[0] <= size[0] - size_character[0]:
-                        screen.fill((0, 0, 0))
-                        pos = (pos[0] + 1, pos[1])
-                        image1 = mandalorian2_move1
-                        image2 = mandalorian2_move2
-                        check_and_break = True
-                if i and check_and_break:
-                    stap += 1
-                    if stap <= 20:
-                        screen.blit(image1, pos)
-                    elif stap <= 40:
-                        screen.blit(image2, pos)
-                    else:
-                        screen.blit(image2, pos)
-                        stap = 0
+        move()
+        rem = list()
+        for i in range(len(shoot_coord)):
+            if shoot_coord[i][2] <= 50:
+                pygame.draw.line(screen, (255, 0, 0), shoot_coord[i][0], shoot_coord[i][1])
+                shoot_coord[i][2] = shoot_coord[i][2] + 1
+            else:
+                rem.append(shoot_coord[i])
+        for i in range(len(rem)):
+            shoot_coord.remove(rem[i])
         pygame.display.flip()
     pygame.quit()
