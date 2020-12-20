@@ -53,7 +53,12 @@ def move():
 
 
 def shoot(pos1, pos2):
-    shoot_coord.append([[pos1[0], pos1[1]], [pos2[0], pos2[1]], 0])
+    if pos1 != pos2:
+        mimimum = min(pos1[0], pos2[0])
+        coor1 = (pos1[0] - pos2[0]) / mimimum
+        coor2 = (pos1[1] - pos2[1]) / mimimum
+        sped = [coor1, coor2]
+        shoot_coord.append([[pos1[0], pos1[1]], [pos2[0], pos2[1]], sped])
 
 
 if __name__ == '__main__':
@@ -71,6 +76,7 @@ if __name__ == '__main__':
     s = ''
     wait = 0
     sp = 2
+    smome = False
     mandalorian1 = pygame.image.load('files/textures/main_charachter_1/mandalorian.png')
     mandalorian1_move1 = pygame.image.load('files/textures/main_charachter_1/mandalorian_move1.png')
     mandalorian1_move2 = pygame.image.load('files/textures/main_charachter_1/mandalorian_move2.png')
@@ -91,21 +97,24 @@ if __name__ == '__main__':
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 running = False
-            if event.type == pygame.MOUSEBUTTONDOWN:
+            if event.type == pygame.MOUSEBUTTONDOWN and smome:
                 shoot(event.pos, pos)
             if event.type == pygame.KEYDOWN:
                 flags[event.key] = True
+                smome = True
             if event.type == pygame.KEYUP:
                 flags[event.key] = False
         move()
-        rem = list()
-        for i in range(len(shoot_coord)):
-            if shoot_coord[i][2] <= 50:
-                pygame.draw.line(screen, (255, 0, 0), shoot_coord[i][0], shoot_coord[i][1])
-                shoot_coord[i][2] = shoot_coord[i][2] + 1
-            else:
-                rem.append(shoot_coord[i])
-        for i in range(len(rem)):
-            shoot_coord.remove(rem[i])
+        if smome:
+            rem = list()
+            for i in range(len(shoot_coord)):
+                if (shoot_coord[i][0][0] != int(shoot_coord[i][1][0])) and (shoot_coord[i][0][1] != int(shoot_coord[i][1][1])):
+                    pygame.draw.circle(screen, (255, 0, 0), [shoot_coord[i][1][0] + shoot_coord[i][2][0], shoot_coord[i][1][1] + shoot_coord[i][2][1]], 5)
+                    shoot_coord[i][1][0] = shoot_coord[i][1][0] + shoot_coord[i][2][0]
+                    shoot_coord[i][1][1] = shoot_coord[i][1][1] + shoot_coord[i][2][1]
+                else:
+                    rem.append(shoot_coord[i])
+            for i in range(len(rem)):
+                shoot_coord.remove(rem[i])
         pygame.display.flip()
     pygame.quit()
