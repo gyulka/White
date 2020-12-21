@@ -88,7 +88,7 @@ def shoot(pos1, pos2):
 if __name__ == '__main__':
     pygame.init()
     shoot_coord = list()
-    size = (1000, 1000)
+    size = (1280, 720)
     screen = pygame.display.set_mode(size)
     screen.fill((0, 0, 0))
     size_character = (55, 80)
@@ -101,6 +101,7 @@ if __name__ == '__main__':
     wait = 0
     sp = 2
     smome = False
+    logo = pygame.image.load('files/textures/Logo/logo.png')
     mandalorian1 = pygame.image.load('files/textures/main_charachter_1/mandalorian.png')
     mandalorian1_move1 = pygame.image.load('files/textures/main_charachter_1/mandalorian_move1.png')
     mandalorian1_move2 = pygame.image.load('files/textures/main_charachter_1/mandalorian_move2.png')
@@ -116,7 +117,7 @@ if __name__ == '__main__':
 
     mandalorian4_move1 = pygame.image.load('files/textures/main_charachter_1/mandalorian_back_move1.png')
     mandalorian4_move2 = pygame.image.load('files/textures/main_charachter_1/mandalorian_back_move2.png')
-    screen.blit(mandalorian1, pos)
+    screen.blit(logo, (0, 0))
     while running:
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
