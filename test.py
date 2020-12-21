@@ -1,6 +1,7 @@
 import pygame
 import math
 
+
 class Bullet:
     def __init__(self, otkuda, kuda, velocity):
         self.otkuda = otkuda
@@ -9,8 +10,10 @@ class Bullet:
         self.fps = 60
         #  возможно будет двигатся лишь на положительную сторону по оси у(тогда надо попробовать или иф или арксинус и теорему пифагора
         #  куда(?) нужно менять координату для каждого кадра
-        self.alfa = [math.atan((self.kuda[0] - self.otkuda[0]) / (self.kuda[1] - self.otkuda[1]))]  #  нашли направление вектора(градус)
-        self.moving = [self.velocity * math.sin(self.alfa[0]), self.velocity * math.cos(self.alfa[1])]  # как изменяется координата
+        self.alfa = [math.atan(
+            (self.kuda[0] - self.otkuda[0]) / (self.kuda[1] - self.otkuda[1]))]  # нашли направление вектора(градус)
+        self.moving = [self.velocity * math.sin(self.alfa[0]),
+                       self.velocity * math.cos(self.alfa[1])]  # как изменяется координата
 
     def render(self):
         pass
@@ -129,8 +132,10 @@ if __name__ == '__main__':
         if smome:
             rem = list()
             for i in range(len(shoot_coord)):
-                if (shoot_coord[i][0][0] != int(shoot_coord[i][1][0])) and (shoot_coord[i][0][1] != int(shoot_coord[i][1][1])):
-                    pygame.draw.circle(screen, (255, 0, 0), [shoot_coord[i][1][0] + shoot_coord[i][2][0], shoot_coord[i][1][1] + shoot_coord[i][2][1]], 5)
+                if (shoot_coord[i][0][0] != int(shoot_coord[i][1][0])) and (
+                        shoot_coord[i][0][1] != int(shoot_coord[i][1][1])):
+                    pygame.draw.circle(screen, (255, 0, 0), [shoot_coord[i][1][0] + shoot_coord[i][2][0],
+                                                             shoot_coord[i][1][1] + shoot_coord[i][2][1]], 5)
                     shoot_coord[i][1][0] = shoot_coord[i][1][0] + shoot_coord[i][2][0]
                     shoot_coord[i][1][1] = shoot_coord[i][1][1] + shoot_coord[i][2][1]
                 else:
