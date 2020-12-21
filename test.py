@@ -1,4 +1,25 @@
 import pygame
+import math
+
+class Bullet:
+    def __init__(self, otkuda, kuda, velocity):
+        self.otkuda = otkuda
+        self.kuda = kuda
+        self.velocity = velocity
+        self.fps = 60
+        #  возможно будет двигатся лишь на положительную сторону по оси у(тогда надо попробовать или иф или арксинус и теорему пифагора
+        #  куда(?) нужно менять координату для каждого кадра
+        self.alfa = [math.atan((self.kuda[0] - self.otkuda[0]) / (self.kuda[1] - self.otkuda[1]))]  #  нашли направление вектора(градус)
+        self.moving = [self.velocity * math.sin(self.alfa[0]), self.velocity * math.cos(self.alfa[1])]  # как изменяется координата
+
+    def render(self):
+        pass
+
+    def move_bullet(self):
+        pass
+
+    def isshootedByPlayer(self):
+        pass
 
 
 def move():
