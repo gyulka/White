@@ -72,4 +72,3 @@ class Board:
             if line == cord - 1:
                 self.screen.blit(box1, (self.pole[int(txt[0]) * self.width + int(txt[1])][1][0][0],
                                         self.pole[int(txt[0]) * self.width + int(txt[1])][1][0][1] - 60))
-                break
