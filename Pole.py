@@ -66,12 +66,10 @@ class Board:
 
     def on_line(self, pos):
         line = (pos[1] + 80) // 40
-        pas = 0
         for i in range(len(self.txt_level)):
             txt = self.txt_level[i].split()
             cord = self.pole[int(txt[0]) * self.width + int(txt[1])][0][0]
             if line == cord - 1:
-                pas += 1
+                self.screen.blit(box1, (self.pole[int(txt[0]) * self.width + int(txt[1])][1][0][0],
+                                        self.pole[int(txt[0]) * self.width + int(txt[1])][1][0][1] - 60))
                 break
-        if pas != 0:
-            return True
