@@ -1,4 +1,5 @@
 import pygame
+box1 = pygame.image.load('files/textures/object/box1.png')
 
 
 class Board:
@@ -31,10 +32,14 @@ class Board:
         for i in range(self.height):
             for j in range(self.width):
                 if self.pole[i * self.width + j][2] == 'box':
-                    pygame.draw.polygon(self.screen, (0, 255, 0), self.pole[i * self.width + j][1])
+                    self.screen.blit(box1, (self.pole[i * self.width + j][1][0][0], self.pole[i * self.width + j][1][0][1] - 60))
+                if self.pole[i * self.width + j][2] == 'sp':
+                    pygame.draw.polygon(self.screen, (0, 255, 255), self.pole[i * self.width + j][1])
 
     def check_in_stop(self, character):
+        global sp
         sum = 0
+        znach = None
         for i in range(len(self.txt_level)):
             txt = self.txt_level[i].split()
             cord = [self.pole[int(txt[0]) * self.width + int(txt[1])][1][0][0],
@@ -47,7 +52,26 @@ class Board:
                 sum += 1
             elif character[0] in range(cord[0] - 20, cord[0] + 41) and character[1] + 80 in range(cord[1], cord[1] + 41):
                 sum += 1
-        if sum == 0:
+            if sum != 0:
+                znach = self.txt_level[i].split()[2]
+                break
+        if znach == 'box':
+            return False
+        elif znach == 'sp':
+            sp = 10
             return True
         else:
-            return False
+            sp = 2
+            return True
+
+    def on_line(self, pos):
+        line = (pos[1] + 80) // 40
+        pas = 0
+        for i in range(len(self.txt_level)):
+            txt = self.txt_level[i].split()
+            cord = self.pole[int(txt[0]) * self.width + int(txt[1])][0][0]
+            if line == cord - 1:
+                pas += 1
+                break
+        if pas != 0:
+            return True
