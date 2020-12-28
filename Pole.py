@@ -1,5 +1,6 @@
 import pygame
 box1 = pygame.image.load('files/textures/object/box1.png')
+image = {'box1': box1}
 
 
 class Board:
@@ -70,5 +71,5 @@ class Board:
             txt = self.txt_level[i].split()
             cord = self.pole[int(txt[0]) * self.width + int(txt[1])][0][0]
             if line == cord - 1:
-                self.screen.blit(box1, (self.pole[int(txt[0]) * self.width + int(txt[1])][1][0][0],
+                self.screen.blit(image[txt[3]], (self.pole[int(txt[0]) * self.width + int(txt[1])][1][0][0],
                                         self.pole[int(txt[0]) * self.width + int(txt[1])][1][0][1] - 60))
