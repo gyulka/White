@@ -1,6 +1,7 @@
 import pygame
 box1 = pygame.image.load('files/textures/object/box1.png')
-image = {'box1': box1}
+box2 = pygame.image.load('files/textures/object/box2.png')
+image = {'box1': box1, 'box2': box2}
 
 
 class Board:
@@ -21,19 +22,20 @@ class Board:
                 coor4 = (i + 1) * self.cell_size
                 coor = ((coor1, coor2), (coor3, coor2), (coor3, coor4), (coor1, coor4))
                 if len(self.pole) != self.width * self.height:
-                    self.pole.append([(i, j), coor, None])
+                    self.pole.append([(i, j), coor, None, None])
 
     def lvl(self, level):  # создание значения уровня из вне по координатам.
         self.txt_level = (open(level, mode='rt').read()).split(';')
         for i in range(len(self.txt_level)):
             txt = self.txt_level[i].split()
             self.pole[int(txt[0]) * self.width + int(txt[1])][2] = txt[2]
+            self.pole[int(txt[0]) * self.width + int(txt[1])][3] = txt[3]
 
     def render_level(self):  # тут уже рисуются объекты поля
         for i in range(self.height):
             for j in range(self.width):
                 if self.pole[i * self.width + j][2] == 'box':
-                    self.screen.blit(box1, (self.pole[i * self.width + j][1][0][0], self.pole[i * self.width + j][1][0][1] - 60))
+                    self.screen.blit(image[self.pole[i * self.width + j][3]], (self.pole[i * self.width + j][1][0][0], self.pole[i * self.width + j][1][0][1] - 60))
                 if self.pole[i * self.width + j][2] == 'sp':
                     pygame.draw.polygon(self.screen, (0, 255, 255), self.pole[i * self.width + j][1])
 
@@ -70,6 +72,6 @@ class Board:
         for i in range(len(self.txt_level)):
             txt = self.txt_level[i].split()
             cord = self.pole[int(txt[0]) * self.width + int(txt[1])][0][0]
-            if line == cord - 1:
+            if line == cord - 1 or line == cord - 2:
                 self.screen.blit(image[txt[3]], (self.pole[int(txt[0]) * self.width + int(txt[1])][1][0][0],
                                         self.pole[int(txt[0]) * self.width + int(txt[1])][1][0][1] - 60))
