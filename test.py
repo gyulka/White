@@ -1,19 +1,33 @@
 import pygame
 import math
+from Pole import Board
+
+SIZE = (1280, 720)
+SIZE_PERS = [55, 80]
+SIZE_CELL = 40
+
 
 class Bullet:
-    def __init__(self, otkuda, kuda, velocity):
+    def __init__(self, otkuda, kuda, sc):
         self.otkuda = otkuda
         self.kuda = kuda
-        self.velocity = velocity
+        self.velocity = 10
+        self.screen = sc
         self.fps = 60
-        #  возможно будет двигатся лишь на положительную сторону по оси у(тогда надо попробовать или иф или арксинус и теорему пифагора
+        self.height, self.width = SIZE
+        #  возможно будет двигатся лишь на положительную сторону
+        #  по оси у(тогда надо попробовать или иф или арксинус и теорему пифагора
         #  куда(?) нужно менять координату для каждого кадра
-        self.alfa = [math.atan((self.kuda[0] - self.otkuda[0]) / (self.kuda[1] - self.otkuda[1]))]  #  нашли направление вектора(градус)
-        self.moving = [self.velocity * math.sin(self.alfa[0]), self.velocity * math.cos(self.alfa[1])]  # как изменяется координата
+        self.alfa = math.atan(
+            (self.kuda[0] - self.otkuda[0]) / (self.kuda[1] - self.otkuda[1]))  # нашли направление вектора(градус)
+        self.moving = [self.velocity * math.sin(self.alfa),
+                       self.velocity * math.cos(self.alfa)]  # как изменяется координата
+        # print(otkuda, kuda, SIZE, self.alfa, (self.kuda[0] - self.otkuda[0]), (self.kuda[1] - self.otkuda[1]), self.moving)
+        self.render()
 
     def render(self):
-        pass
+        pygame.draw.rect(self.screen, (255, 255, 255), [self.otkuda[0] + self.moving[0], self.otkuda[1] + self.moving[1],
+                                                      self.otkuda[0] + self.moving[0] + 10, self.otkuda[1] + self.moving[1] + 10], 0)
 
     def move_bullet(self):
         pass
@@ -31,30 +45,34 @@ def move():
             image1 = mandalorian1_move1
             image2 = mandalorian1_move2
             check_and_break = False
-            if i == pygame.K_w:
+            if i == pygame.K_w and board.check_in_stop((pos[0], pos[1] - sp)):
                 if pos[1] - sp >= 1:
                     screen.fill((0, 0, 0))
+                    board.render_level()
                     pos = (pos[0], pos[1] - sp)
                     image1 = mandalorian4_move1
                     image2 = mandalorian4_move2
                     check_and_break = True
-            if i == pygame.K_a:
+            if i == pygame.K_a and board.check_in_stop((pos[0] - sp, pos[1])):
                 if pos[0] - sp >= 1:
                     screen.fill((0, 0, 0))
+                    board.render_level()
                     pos = (pos[0] - sp, pos[1])
                     image1 = mandalorian3_move1
                     image2 = mandalorian3_move2
                     check_and_break = True
-            if i == pygame.K_s:
+            if i == pygame.K_s and board.check_in_stop((pos[0], pos[1] + sp)):
                 if pos[1] < size[1] - size_character[1]:
                     screen.fill((0, 0, 0))
+                    board.render_level()
                     pos = (pos[0], pos[1] + sp)
                     image1 = mandalorian1_move1
                     image2 = mandalorian1_move2
                     check_and_break = True
-            if i == pygame.K_d:
+            if i == pygame.K_d and board.check_in_stop((pos[0] + sp, pos[1])):
                 if pos[0] <= size[0] - size_character[0]:
                     screen.fill((0, 0, 0))
+                    board.render_level()
                     pos = (pos[0] + sp, pos[1])
                     image1 = mandalorian2_move1
                     image2 = mandalorian2_move2
@@ -70,7 +88,9 @@ def move():
                     stap = 0
         if wait >= 50:
             screen.fill((0, 0, 0))
+            board.render_level()
             screen.blit(mandalorian1, pos)
+        board.on_line(pos)
 
 
 def shoot(pos1, pos2):
@@ -85,7 +105,7 @@ def shoot(pos1, pos2):
 if __name__ == '__main__':
     pygame.init()
     shoot_coord = list()
-    size = (1000, 1000)
+    size = (1280, 720)
     screen = pygame.display.set_mode(size)
     screen.fill((0, 0, 0))
     size_character = (55, 80)
@@ -98,6 +118,7 @@ if __name__ == '__main__':
     wait = 0
     sp = 2
     smome = False
+    logo = pygame.image.load('files/textures/Logo/logo.png')
     mandalorian1 = pygame.image.load('files/textures/main_charachter_1/mandalorian.png')
     mandalorian1_move1 = pygame.image.load('files/textures/main_charachter_1/mandalorian_move1.png')
     mandalorian1_move2 = pygame.image.load('files/textures/main_charachter_1/mandalorian_move2.png')
@@ -113,29 +134,21 @@ if __name__ == '__main__':
 
     mandalorian4_move1 = pygame.image.load('files/textures/main_charachter_1/mandalorian_back_move1.png')
     mandalorian4_move2 = pygame.image.load('files/textures/main_charachter_1/mandalorian_back_move2.png')
-    screen.blit(mandalorian1, pos)
+    board = Board(screen, 1280, 720)
+    board.render_pole()
+    board.lvl('test_level.txt')
+    screen.blit(logo, (0, 0))
     while running:
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 running = False
-            if event.type == pygame.MOUSEBUTTONDOWN and smome:
-                shoot(event.pos, pos)
+            if event.type == pygame.MOUSEBUTTONDOWN:
+                bullet = Bullet(pos, event.pos, screen)
             if event.type == pygame.KEYDOWN:
                 flags[event.key] = True
                 smome = True
             if event.type == pygame.KEYUP:
                 flags[event.key] = False
         move()
-        if smome:
-            rem = list()
-            for i in range(len(shoot_coord)):
-                if (shoot_coord[i][0][0] != int(shoot_coord[i][1][0])) and (shoot_coord[i][0][1] != int(shoot_coord[i][1][1])):
-                    pygame.draw.circle(screen, (255, 0, 0), [shoot_coord[i][1][0] + shoot_coord[i][2][0], shoot_coord[i][1][1] + shoot_coord[i][2][1]], 5)
-                    shoot_coord[i][1][0] = shoot_coord[i][1][0] + shoot_coord[i][2][0]
-                    shoot_coord[i][1][1] = shoot_coord[i][1][1] + shoot_coord[i][2][1]
-                else:
-                    rem.append(shoot_coord[i])
-            for i in range(len(rem)):
-                shoot_coord.remove(rem[i])
         pygame.display.flip()
     pygame.quit()
