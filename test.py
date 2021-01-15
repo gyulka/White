@@ -76,14 +76,11 @@ def move():
                 else:
                     screen.blit(image2, pos)
                     stap = 0
-                if board.on_line(pos):
-                    board.render_level()
         if wait >= 50:
             screen.fill((0, 0, 0))
             board.render_level()
             screen.blit(mandalorian1, pos)
-            if board.on_line(pos):
-                board.render_level()
+        board.on_line(pos)
 
 
 def shoot(pos1, pos2):
@@ -103,7 +100,6 @@ if __name__ == '__main__':
     screen.fill((0, 0, 0))
     size_character = (55, 80)
     pos = (size[0] // 2 - size_character[0] // 2, size[1] // 2 - size_character[1] // 2)
-    pygame.display.flip()
     running = True
     flags = {}
     stap = 0
