@@ -35,7 +35,7 @@ class Board:
         for i in range(self.height):
             for j in range(self.width):
                 if self.pole[i * self.width + j][2] == 'box':
-                    self.screen.blit(image[self.pole[i * self.width + j][3]], (self.pole[i * self.width + j][1][0][0], self.pole[i * self.width + j][1][0][1] - 60))
+                    self.screen.blit(image[self.pole[i * self.width + j][3]], (self.pole[i * self.width + j][1][0][0], self.pole[i * self.width + j][1][0][1] - 80))
                 if self.pole[i * self.width + j][2] == 'sp':
                     pygame.draw.polygon(self.screen, (0, 255, 255), self.pole[i * self.width + j][1])
 
@@ -43,7 +43,7 @@ class Board:
         global sp
         sum = 0
         znach = None
-        for i in range(len(self.txt_level)):
+        for i in range(len(self.txt_level)):  # Проверка, в какой клетке находится игрок.
             txt = self.txt_level[i].split()
             cord = [self.pole[int(txt[0]) * self.width + int(txt[1])][1][0][0],
                     self.pole[int(txt[0]) * self.width + int(txt[1])][1][0][1]]
@@ -67,11 +67,11 @@ class Board:
             sp = 2
             return True
 
-    def on_line(self, pos):
+    def on_line(self, pos):  # РЕАЛИЗМ!!!!!!!!
         line = (pos[1] + 80) // 40
         for i in range(len(self.txt_level)):
             txt = self.txt_level[i].split()
             cord = self.pole[int(txt[0]) * self.width + int(txt[1])][0][0]
             if line == cord - 1 or line == cord - 2:
                 self.screen.blit(image[txt[3]], (self.pole[int(txt[0]) * self.width + int(txt[1])][1][0][0],
-                                        self.pole[int(txt[0]) * self.width + int(txt[1])][1][0][1] - 60))
+                                        self.pole[int(txt[0]) * self.width + int(txt[1])][1][0][1] - 80))

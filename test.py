@@ -100,7 +100,6 @@ if __name__ == '__main__':
     screen.fill((0, 0, 0))
     size_character = (55, 80)
     pos = (size[0] // 2 - size_character[0] // 2, size[1] // 2 - size_character[1] // 2)
-    pygame.display.flip()
     running = True
     flags = {}
     stap = 0
