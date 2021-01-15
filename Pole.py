@@ -41,19 +41,18 @@ class Board:
 
     def check_in_stop(self, character):
         global sp
+        sz = 38
         sum = 0
         znach = None
         for i in range(len(self.txt_level)):  # Проверка, в какой клетке находится игрок.
             txt = self.txt_level[i].split()
             cord = [self.pole[int(txt[0]) * self.width + int(txt[1])][1][0][0],
                     self.pole[int(txt[0]) * self.width + int(txt[1])][1][0][1]]
-            if character[0] + 55 in range(cord[0], cord[0] + 41) and character[1] + 80 in range(cord[1], cord[1] + 41):
+            if character[0] + 40 in range(cord[0], cord[0] + sz) and character[1] + 80 in range(cord[1], cord[1] + sz + 3):
                 sum += 1
-            elif character[0] in range(cord[0], cord[0] + 41) and character[1] + 80 in range(cord[1], cord[1] + 41):
+            elif character[0] in range(cord[0], cord[0] + sz) and character[1] + 80 in range(cord[1], cord[1] + sz + 3):
                 sum += 1
-            elif character[0] + 55 in range(cord[0], cord[0] + 21) and character[1] + 80 in range(cord[1], cord[1] + 41):
-                sum += 1
-            elif character[0] in range(cord[0] - 20, cord[0] + 41) and character[1] + 80 in range(cord[1], cord[1] + 41):
+            elif character[0] in range(cord[0] - sz, cord[0] + sz) and character[1] + 80 in range(cord[1], cord[1] + sz + 3):
                 sum += 1
             if sum != 0:
                 znach = self.txt_level[i].split()[2]
