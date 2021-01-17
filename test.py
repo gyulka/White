@@ -7,8 +7,9 @@ SIZE_PERS = [55, 80]
 SIZE_CELL = 40
 
 
-class Bullet:
-    def __init__(self, otkuda, kuda, sc):
+class Bullet(pygame.sprite.Sprite):
+    def __init__(self, group, otkuda, kuda, sc, event):
+        super().__init__(group)
         self.otkuda = otkuda
         self.kuda = kuda
         self.velocity = 10
@@ -22,12 +23,15 @@ class Bullet:
             (self.kuda[0] - self.otkuda[0]) / (self.kuda[1] - self.otkuda[1]))  # нашли направление вектора(градус)
         self.moving = [self.velocity * math.sin(self.alfa),
                        self.velocity * math.cos(self.alfa)]  # как изменяется координата
+        self.image = mandalorian1
+        self.rect = self.image.get_rect()
+        self.rect.x = otkuda[0]
+        self.rect.y = otkuda[1]
         # print(otkuda, kuda, SIZE, self.alfa, (self.kuda[0] - self.otkuda[0]), (self.kuda[1] - self.otkuda[1]), self.moving)
-        self.render()
+        self.update(event)
 
-    def render(self):
-        pygame.draw.rect(self.screen, (255, 255, 255), [self.otkuda[0] + self.moving[0], self.otkuda[1] + self.moving[1],
-                                                      self.otkuda[0] + self.moving[0] + 10, self.otkuda[1] + self.moving[1] + 10], 0)
+    def update(self, *args):
+        self.rect = self.rect.move(*self.moving)
 
     def move_bullet(self):
         pass
@@ -104,6 +108,7 @@ def shoot(pos1, pos2):
 
 if __name__ == '__main__':
     pygame.init()
+    all_sprites = pygame.sprite.Group()
     shoot_coord = list()
     size = (1280, 720)
     screen = pygame.display.set_mode(size)
@@ -143,12 +148,14 @@ if __name__ == '__main__':
             if event.type == pygame.QUIT:
                 running = False
             if event.type == pygame.MOUSEBUTTONDOWN:
-                bullet = Bullet(pos, event.pos, screen)
+                bullet = Bullet(all_sprites, pos, event.pos, screen, event)
             if event.type == pygame.KEYDOWN:
                 flags[event.key] = True
                 smome = True
             if event.type == pygame.KEYUP:
                 flags[event.key] = False
         move()
+        all_sprites.draw(screen)
+        all_sprites.update()
         pygame.display.flip()
     pygame.quit()
