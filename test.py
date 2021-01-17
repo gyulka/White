@@ -28,7 +28,7 @@ class Bullet(pygame.sprite.Sprite):
         self.rect = self.image.get_rect()
         self.rect.x = otkuda[0]
         self.rect.y = otkuda[1]
-        print(self.moving, (self.otkuda[0] - self.kuda[0]), abs(self.otkuda[0] - self.kuda[0]), (self.otkuda[1] - self.kuda[1]), abs(self.otkuda[1] - self.kuda[1]))
+        # print(self.moving, (self.otkuda[0] - self.kuda[0]), abs(self.otkuda[0] - self.kuda[0]), (self.otkuda[1] - self.kuda[1]), abs(self.otkuda[1] - self.kuda[1]))
         # print(otkuda, kuda, SIZE, self.alfa, (self.kuda[0] - self.otkuda[0]), (self.kuda[1] - self.otkuda[1]), self.moving)
         self.update(event)
 
