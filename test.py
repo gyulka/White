@@ -21,12 +21,14 @@ class Bullet(pygame.sprite.Sprite):
         #  куда(?) нужно менять координату для каждого кадра
         self.alfa = math.atan(
             (self.kuda[0] - self.otkuda[0]) / (self.kuda[1] - self.otkuda[1]))  # нашли направление вектора(градус)
-        self.moving = [self.velocity * math.sin(self.alfa),
-                       self.velocity * math.cos(self.alfa)]  # как изменяется координата
+        self.moving = [
+            -self.velocity * math.sin(self.alfa) * (self.otkuda[1] - self.kuda[1]) // abs(self.otkuda[1] - self.kuda[1]),
+            -self.velocity * math.cos(self.alfa) * (self.otkuda[1] - self.kuda[1]) // abs(self.otkuda[1] - self.kuda[1])]
         self.image = mandalorian1
         self.rect = self.image.get_rect()
         self.rect.x = otkuda[0]
         self.rect.y = otkuda[1]
+        print(self.moving, (self.otkuda[0] - self.kuda[0]), abs(self.otkuda[0] - self.kuda[0]), (self.otkuda[1] - self.kuda[1]), abs(self.otkuda[1] - self.kuda[1]))
         # print(otkuda, kuda, SIZE, self.alfa, (self.kuda[0] - self.otkuda[0]), (self.kuda[1] - self.otkuda[1]), self.moving)
         self.update(event)
 
