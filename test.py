@@ -1,10 +1,9 @@
 import pygame
 import math
 from Pole import Board
-from classes import Bullet, Person, BRD, Objects, Box
 
 SIZE = (1280, 720)
-SIZE_PERS = (40, 80)
+SIZE_PERS = [55, 80]
 SIZE_CELL = 40
 
 
