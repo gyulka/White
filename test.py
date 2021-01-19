@@ -123,9 +123,8 @@ if __name__ == '__main__':
     size = (1280, 720)
     screen = pygame.display.set_mode(size)
     screen.fill((0, 0, 0))
-    size_character = (55, 80)
+    size_character = (40, 80)
     pos = (size[0] // 2 - size_character[0] // 2, size[1] // 2 - size_character[1] // 2)
-    pygame.display.flip()
     running = True
     flags = {}
     stap = 0
@@ -153,6 +152,7 @@ if __name__ == '__main__':
     board.render_pole()
     board.lvl('test_level.txt')
     screen.blit(logo, (0, 0))
+    print(board.all_coord())
     while running:
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
