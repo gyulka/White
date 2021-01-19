@@ -41,19 +41,24 @@ class Board:
 
     def check_in_stop(self, character):
         global sp
-        sz = 38
         sum = 0
         znach = None
         for i in range(len(self.txt_level)):  # Проверка, в какой клетке находится игрок.
             txt = self.txt_level[i].split()
             cord = [self.pole[int(txt[0]) * self.width + int(txt[1])][1][0][0],
                     self.pole[int(txt[0]) * self.width + int(txt[1])][1][0][1]]
-            if character[0] + 40 in range(cord[0], cord[0] + sz) and character[1] + 80 in range(cord[1], cord[1] + sz + 3):
+            x1, y1 = character[0], character[1] + 80
+            if (((x1 + 40 > cord[0] and x1 + 40 < cord[0] + 40) or (x1 > cord[0] and x1 < cord[0] - 40)) and (y1 > cord[1] and y1 < cord[1] + 40)):
                 sum += 1
-            elif character[0] in range(cord[0], cord[0] + sz) and character[1] + 80 in range(cord[1], cord[1] + sz + 3):
+            x1, y1 = character[0] - 40, character[1] + 80
+            if (((x1 + 40 > cord[0] and x1 + 40 < cord[0] + 40) or (x1 > cord[0] and x1 < cord[0] - 40)) and (y1 > cord[1] and y1 < cord[1] + 40)):
                 sum += 1
-            elif character[0] in range(cord[0] - sz, cord[0] + sz) and character[1] + 80 in range(cord[1], cord[1] + sz + 3):
-                sum += 1
+            x1 = (character[0] + 20) // 40
+            y1 = (character[1]) // 40 + 2
+            for i in range(len(self.txt_level)):
+                txt = self.txt_level[i].split()
+                if txt[0] == str(y1) and txt[1] == str(x1) and txt[2] == 'box':
+                    sum += 1
             if sum != 0:
                 znach = self.txt_level[i].split()[2]
                 break
@@ -71,7 +76,7 @@ class Board:
         for i in range(len(self.txt_level)):
             txt = self.txt_level[i].split()
             cord = self.pole[int(txt[0]) * self.width + int(txt[1])][0][0]
-            if line == cord - 1 or line == cord - 2:
+            if line == cord or line == cord - 1 or line == cord - 2:
                 self.screen.blit(image[txt[3]], (self.pole[int(txt[0]) * self.width + int(txt[1])][1][0][0],
                                         self.pole[int(txt[0]) * self.width + int(txt[1])][1][0][1] - 80))
 
