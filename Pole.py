@@ -74,3 +74,10 @@ class Board:
             if line == cord - 1 or line == cord - 2:
                 self.screen.blit(image[txt[3]], (self.pole[int(txt[0]) * self.width + int(txt[1])][1][0][0],
                                         self.pole[int(txt[0]) * self.width + int(txt[1])][1][0][1] - 80))
+
+    def all_coord(self):
+        spisok = list()
+        for i in range(len(self.pole)):
+            spisok.append([[self.pole[i][0][0], self.pole[i][0][1]], [self.pole[i][0][0] + 40, self.pole[i][0][1] + 40]])
+        return spisok
+

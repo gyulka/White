@@ -127,6 +127,7 @@ if __name__ == '__main__':
     board.render_pole()
     board.lvl('test_level.txt')
     screen.blit(logo, (0, 0))
+    print(board.all_coord())
     while running:
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
