@@ -8,14 +8,17 @@ SIZE_CELL = 40
 
 
 class Bullet(pygame.sprite.Sprite):
-    def __init__(self, group, otkuda, kuda, sc, event):
+    def __init__(self, group, otkuda, kuda, sc, event, otraj=3):
         super().__init__(group)
         self.otkuda = otkuda
         self.kuda = kuda
-        self.velocity = 10
+        self.velocity = 15
         self.screen = sc
         self.fps = 60
         self.height, self.width = SIZE
+        self.otraj = otraj
+        self.kolvo_otraj = -1
+        self.size_bullet = 40
         #  возможно будет двигатся лишь на положительную сторону
         #  по оси у(тогда надо попробовать или иф или арксинус и теорему пифагора
         #  куда(?) нужно менять координату для каждого кадра
@@ -33,13 +36,18 @@ class Bullet(pygame.sprite.Sprite):
         self.update(event)
 
     def update(self, *args):
+        if self.rect.x >= self.height - self.size_bullet or self.rect.x <= 0:
+            self.kolvo_otraj += 1
+            self.moving[0] = - self.moving[0]
+        if self.rect.y >= self.width - self.size_bullet or self.rect.y <= 0:
+            self.kolvo_otraj += 1
+            self.moving[1] = - self.moving[1]
+        if self.kolvo_otraj == self.otraj or self.isshootedByPlayer():
+            self.kill()
         self.rect = self.rect.move(*self.moving)
 
-    def move_bullet(self):
-        pass
-
     def isshootedByPlayer(self):
-        pass
+        return False
 
 
 def move():
