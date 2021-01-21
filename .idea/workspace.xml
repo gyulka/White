@@ -4,7 +4,11 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="24b1f7ca-00ee-488b-bdb6-97f1039dae0e" name="Default Changelist" comment="набросок пулиv2.3 &#10;стреляет людьми, устает, умирает" />
+    <list default="true" id="24b1f7ca-00ee-488b-bdb6-97f1039dae0e" name="Default Changelist" comment="1)соеденяю логи">
+      <change afterPath="$PROJECT_DIR$/classes.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/test.py" beforeDir="false" afterPath="$PROJECT_DIR$/test.py" afterDir="false" />
+    </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
@@ -170,7 +174,14 @@
       <option name="project" value="LOCAL" />
       <updated>1611060109816</updated>
     </task>
-    <option name="localTasksCounter" value="14" />
+    <task id="LOCAL-00014" summary="1)соеденяю логи">
+      <created>1611242205824</created>
+      <option name="number" value="00014" />
+      <option name="presentableId" value="LOCAL-00014" />
+      <option name="project" value="LOCAL" />
+      <updated>1611242205824</updated>
+    </task>
+    <option name="localTasksCounter" value="15" />
     <servers />
   </component>
   <component name="Vcs.Log.Tabs.Properties">
@@ -244,6 +255,7 @@
     <MESSAGE value="набросок пулиv2.1&#10;пули -- люди, но красиво, надо разобраться с углом" />
     <MESSAGE value="набросок пулиv2.2&#10;пуляет людьми как бог" />
     <MESSAGE value="набросок пулиv2.3 &#10;стреляет людьми, устает, умирает" />
-    <option name="LAST_COMMIT_MESSAGE" value="набросок пулиv2.3 &#10;стреляет людьми, устает, умирает" />
+    <MESSAGE value="1)соеденяю логи" />
+    <option name="LAST_COMMIT_MESSAGE" value="1)соеденяю логи" />
   </component>
 </project>
