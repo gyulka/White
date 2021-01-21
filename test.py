@@ -2,28 +2,52 @@ import pygame
 import math
 from Pole import Board
 
+SIZE = (1280, 720)
+SIZE_PERS = [55, 80]
+SIZE_CELL = 40
 
-class Bullet:
-    def __init__(self, otkuda, kuda, velocity):
+
+class Bullet(pygame.sprite.Sprite):
+    def __init__(self, group, otkuda, kuda, sc, event, otraj=3):
+        super().__init__(group)
         self.otkuda = otkuda
         self.kuda = kuda
-        self.velocity = velocity
+        self.velocity = 15
+        self.screen = sc
         self.fps = 60
-        #  возможно будет двигатся лишь на положительную сторону по оси у(тогда надо попробовать или иф или арксинус и теорему пифагора
+        self.height, self.width = SIZE
+        self.otraj = otraj
+        self.kolvo_otraj = -1
+        self.size_bullet = 40
+        #  возможно будет двигатся лишь на положительную сторону
+        #  по оси у(тогда надо попробовать или иф или арксинус и теорему пифагора
         #  куда(?) нужно менять координату для каждого кадра
-        self.alfa = [math.atan(
-            (self.kuda[0] - self.otkuda[0]) / (self.kuda[1] - self.otkuda[1]))]  # нашли направление вектора(градус)
-        self.moving = [self.velocity * math.sin(self.alfa[0]),
-                       self.velocity * math.cos(self.alfa[1])]  # как изменяется координата
+        self.alfa = math.atan(
+            (self.kuda[0] - self.otkuda[0]) / (self.kuda[1] - self.otkuda[1]))  # нашли направление вектора(градус)
+        self.moving = [
+            -self.velocity * math.sin(self.alfa) * (self.otkuda[1] - self.kuda[1]) // abs(self.otkuda[1] - self.kuda[1]),
+            -self.velocity * math.cos(self.alfa) * (self.otkuda[1] - self.kuda[1]) // abs(self.otkuda[1] - self.kuda[1])]
+        self.image = mandalorian1
+        self.rect = self.image.get_rect()
+        self.rect.x = otkuda[0]
+        self.rect.y = otkuda[1]
+        # print(self.moving, (self.otkuda[0] - self.kuda[0]), abs(self.otkuda[0] - self.kuda[0]), (self.otkuda[1] - self.kuda[1]), abs(self.otkuda[1] - self.kuda[1]))
+        # print(otkuda, kuda, SIZE, self.alfa, (self.kuda[0] - self.otkuda[0]), (self.kuda[1] - self.otkuda[1]), self.moving)
+        self.update(event)
 
-    def render(self):
-        pass
-
-    def move_bullet(self):
-        pass
+    def update(self, *args):
+        if self.rect.x >= self.height - self.size_bullet or self.rect.x <= 0:
+            self.kolvo_otraj += 1
+            self.moving[0] = - self.moving[0]
+        if self.rect.y >= self.width - self.size_bullet or self.rect.y <= 0:
+            self.kolvo_otraj += 1
+            self.moving[1] = - self.moving[1]
+        if self.kolvo_otraj == self.otraj or self.isshootedByPlayer():
+            self.kill()
+        self.rect = self.rect.move(*self.moving)
 
     def isshootedByPlayer(self):
-        pass
+        return False
 
 
 def move():
@@ -90,6 +114,7 @@ def shoot(pos1, pos2):
 
 if __name__ == '__main__':
     pygame.init()
+    all_sprites = pygame.sprite.Group()
     shoot_coord = list()
     size = (1280, 720)
     screen = pygame.display.set_mode(size)
@@ -128,12 +153,14 @@ if __name__ == '__main__':
             if event.type == pygame.QUIT:
                 running = False
             if event.type == pygame.MOUSEBUTTONDOWN:
-                pass
+                bullet = Bullet(all_sprites, pos, event.pos, screen, event)
             if event.type == pygame.KEYDOWN:
                 flags[event.key] = True
                 smome = True
             if event.type == pygame.KEYUP:
                 flags[event.key] = False
         move()
+        all_sprites.draw(screen)
+        all_sprites.update()
         pygame.display.flip()
     pygame.quit()
