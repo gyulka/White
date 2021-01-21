@@ -2,6 +2,7 @@ import pygame
 box1 = pygame.image.load('files/textures/object/box1.png')
 box2 = pygame.image.load('files/textures/object/box2.png')
 box3 = pygame.image.load('files/textures/object/box3.png')
+golv = pygame.image.load('files/textures/object/golv.png')
 image = {'box1': box1, 'box2': box2, 'box3': box3}
 
 
@@ -33,12 +34,11 @@ class Board:
             self.pole[int(txt[0]) * self.width + int(txt[1])][3] = txt[3]
 
     def render_level(self):  # тут уже рисуются объекты поля
+        self.screen.fill((0, 0, 0))
         for i in range(self.height):
             for j in range(self.width):
                 if self.pole[i * self.width + j][2] == 'box':
                     self.screen.blit(image[self.pole[i * self.width + j][3]], (self.pole[i * self.width + j][1][0][0], self.pole[i * self.width + j][1][0][1] - 80))
-                if self.pole[i * self.width + j][2] == 'sp':
-                    pygame.draw.polygon(self.screen, (0, 255, 255), self.pole[i * self.width + j][1])
 
     def check_in_stop(self, character):
         global sp
