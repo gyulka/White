@@ -1,0 +1,249 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="AutoImportSettings">
+    <option name="autoReloadType" value="SELECTIVE" />
+  </component>
+  <component name="ChangeListManager">
+    <list default="true" id="24b1f7ca-00ee-488b-bdb6-97f1039dae0e" name="Default Changelist" comment="набросок пулиv2.3 &#10;стреляет людьми, устает, умирает" />
+    <option name="SHOW_DIALOG" value="false" />
+    <option name="HIGHLIGHT_CONFLICTS" value="true" />
+    <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
+    <option name="LAST_RESOLUTION" value="IGNORE" />
+  </component>
+  <component name="FileTemplateManagerImpl">
+    <option name="RECENT_TEMPLATES">
+      <list>
+        <option value="Python Script" />
+      </list>
+    </option>
+  </component>
+  <component name="Git.Settings">
+    <option name="RECENT_BRANCH_BY_REPOSITORY">
+      <map>
+        <entry key="$PROJECT_DIR$" value="Sve4ka_работает" />
+      </map>
+    </option>
+    <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
+  </component>
+  <component name="ProjectId" id="1lsBmIrmLZ30q5IbUtvZSqkgiS1" />
+  <component name="ProjectLevelVcsManager" settingsEditedManually="true" />
+  <component name="ProjectViewState">
+    <option name="hideEmptyMiddlePackages" value="true" />
+    <option name="showLibraryContents" value="true" />
+  </component>
+  <component name="PropertiesComponent">
+    <property name="RunOnceActivity.OpenProjectViewOnStart" value="true" />
+    <property name="RunOnceActivity.ShowReadmeOnStart" value="true" />
+    <property name="last_opened_file_path" value="$PROJECT_DIR$" />
+    <property name="settings.editor.selected.configurable" value="com.jetbrains.python.configuration.PyActiveSdkModuleConfigurable" />
+    <property name="settings.editor.splitter.proportion" value="0.2311609" />
+  </component>
+  <component name="RunManager">
+    <configuration name="test" type="PythonConfigurationType" factoryName="Python" temporary="true" nameIsGenerated="true">
+      <option name="INTERPRETER_OPTIONS" value="" />
+      <option name="PARENT_ENVS" value="true" />
+      <envs>
+        <env name="PYTHONUNBUFFERED" value="1" />
+      </envs>
+      <option name="SDK_HOME" value="C:\Users\321\AppData\Local\Programs\Python\Python39\python.exe" />
+      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$" />
+      <option name="IS_MODULE_SDK" value="false" />
+      <option name="ADD_CONTENT_ROOTS" value="true" />
+      <option name="ADD_SOURCE_ROOTS" value="true" />
+      <module name="" />
+      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/test.py" />
+      <option name="PARAMETERS" value="" />
+      <option name="SHOW_COMMAND_LINE" value="false" />
+      <option name="EMULATE_TERMINAL" value="false" />
+      <option name="MODULE_MODE" value="false" />
+      <option name="REDIRECT_INPUT" value="false" />
+      <option name="INPUT_FILE" value="" />
+      <method v="2" />
+    </configuration>
+    <recent_temporary>
+      <list>
+        <item itemvalue="Python.test" />
+        <item itemvalue="Python.test" />
+        <item itemvalue="Python.test" />
+        <item itemvalue="Python.test" />
+        <item itemvalue="Python.test" />
+      </list>
+    </recent_temporary>
+  </component>
+  <component name="SpellCheckerSettings" RuntimeDictionaries="0" Folders="0" CustomDictionaries="0" DefaultDictionary="application-level" UseSingleDictionary="true" transferred="true" />
+  <component name="TaskManager">
+    <task active="true" id="Default" summary="Default task">
+      <changelist id="24b1f7ca-00ee-488b-bdb6-97f1039dae0e" name="Default Changelist" comment="" />
+      <created>1608376076198</created>
+      <option name="number" value="Default" />
+      <option name="presentableId" value="Default" />
+      <updated>1608376076198</updated>
+    </task>
+    <task id="LOCAL-00001" summary="Sve4ka">
+      <created>1608376225572</created>
+      <option name="number" value="00001" />
+      <option name="presentableId" value="LOCAL-00001" />
+      <option name="project" value="LOCAL" />
+      <updated>1608376225572</updated>
+    </task>
+    <task id="LOCAL-00002" summary="for you">
+      <created>1608376407381</created>
+      <option name="number" value="00002" />
+      <option name="presentableId" value="LOCAL-00002" />
+      <option name="project" value="LOCAL" />
+      <updated>1608376407381</updated>
+    </task>
+    <task id="LOCAL-00003" summary="for you v2.0">
+      <created>1608376486982</created>
+      <option name="number" value="00003" />
+      <option name="presentableId" value="LOCAL-00003" />
+      <option name="project" value="LOCAL" />
+      <updated>1608376486982</updated>
+    </task>
+    <task id="LOCAL-00004" summary="версия свечи">
+      <created>1608376790316</created>
+      <option name="number" value="00004" />
+      <option name="presentableId" value="LOCAL-00004" />
+      <option name="project" value="LOCAL" />
+      <updated>1608376790316</updated>
+    </task>
+    <task id="LOCAL-00005" summary="check">
+      <created>1608377071467</created>
+      <option name="number" value="00005" />
+      <option name="presentableId" value="LOCAL-00005" />
+      <option name="project" value="LOCAL" />
+      <updated>1608377071467</updated>
+    </task>
+    <task id="LOCAL-00006" summary="набросок class Bullet">
+      <created>1608541459088</created>
+      <option name="number" value="00006" />
+      <option name="presentableId" value="LOCAL-00006" />
+      <option name="project" value="LOCAL" />
+      <updated>1608541459088</updated>
+    </task>
+    <task id="LOCAL-00007" summary="проверка работы ветки и набросок пули(тот же)">
+      <created>1608570457711</created>
+      <option name="number" value="00007" />
+      <option name="presentableId" value="LOCAL-00007" />
+      <option name="project" value="LOCAL" />
+      <updated>1608570457711</updated>
+    </task>
+    <task id="LOCAL-00008" summary="набросок пулиv2.0&#10;вроде как рисует пулю(пока квадратную, агда) но изза быстрой смены кадров не видно">
+      <created>1610645972581</created>
+      <option name="number" value="00008" />
+      <option name="presentableId" value="LOCAL-00008" />
+      <option name="project" value="LOCAL" />
+      <updated>1610645972581</updated>
+    </task>
+    <task id="LOCAL-00009" summary="набросок пулиv2.0&#10;вроде как рисует пулю(пока квадратную, агда) но изза быстрой смены кадров не видно">
+      <created>1610645991200</created>
+      <option name="number" value="00009" />
+      <option name="presentableId" value="LOCAL-00009" />
+      <option name="project" value="LOCAL" />
+      <updated>1610645991200</updated>
+    </task>
+    <task id="LOCAL-00010" summary="набросок пулиv2.1&#10;пули -- люди, но красиво, надо разобраться с углом">
+      <created>1610897429177</created>
+      <option name="number" value="00010" />
+      <option name="presentableId" value="LOCAL-00010" />
+      <option name="project" value="LOCAL" />
+      <updated>1610897429177</updated>
+    </task>
+    <task id="LOCAL-00011" summary="набросок пулиv2.2&#10;пуляет людьми как бог">
+      <created>1610903907272</created>
+      <option name="number" value="00011" />
+      <option name="presentableId" value="LOCAL-00011" />
+      <option name="project" value="LOCAL" />
+      <updated>1610903907272</updated>
+    </task>
+    <task id="LOCAL-00012" summary="набросок пулиv2.2&#10;пуляет людьми как бог">
+      <created>1610903937540</created>
+      <option name="number" value="00012" />
+      <option name="presentableId" value="LOCAL-00012" />
+      <option name="project" value="LOCAL" />
+      <updated>1610903937540</updated>
+    </task>
+    <task id="LOCAL-00013" summary="набросок пулиv2.3 &#10;стреляет людьми, устает, умирает">
+      <created>1611060109816</created>
+      <option name="number" value="00013" />
+      <option name="presentableId" value="LOCAL-00013" />
+      <option name="project" value="LOCAL" />
+      <updated>1611060109816</updated>
+    </task>
+    <option name="localTasksCounter" value="14" />
+    <servers />
+  </component>
+  <component name="Vcs.Log.Tabs.Properties">
+    <option name="TAB_STATES">
+      <map>
+        <entry key="MAIN">
+          <value>
+            <State>
+              <option name="CUSTOM_BOOLEAN_PROPERTIES">
+                <map>
+                  <entry key="Show.Git.Branches" value="true" />
+                </map>
+              </option>
+            </State>
+          </value>
+        </entry>
+      </map>
+    </option>
+    <option name="RECENT_FILTERS">
+      <map>
+        <entry key="Branch">
+          <value>
+            <list>
+              <RecentGroup>
+                <option name="FILTER_VALUES">
+                  <option value="origin/Öst_arbetar" />
+                </option>
+              </RecentGroup>
+              <RecentGroup>
+                <option name="FILTER_VALUES">
+                  <option value="origin/master" />
+                </option>
+              </RecentGroup>
+              <RecentGroup>
+                <option name="FILTER_VALUES">
+                  <option value="master" />
+                </option>
+              </RecentGroup>
+              <RecentGroup>
+                <option name="FILTER_VALUES">
+                  <option value="HEAD" />
+                </option>
+              </RecentGroup>
+            </list>
+          </value>
+        </entry>
+        <entry key="User">
+          <value>
+            <list>
+              <RecentGroup>
+                <option name="FILTER_VALUES">
+                  <option value="*" />
+                </option>
+              </RecentGroup>
+            </list>
+          </value>
+        </entry>
+      </map>
+    </option>
+    <option name="oldMeFiltersMigrated" value="true" />
+  </component>
+  <component name="VcsManagerConfiguration">
+    <MESSAGE value="Sve4ka" />
+    <MESSAGE value="for you" />
+    <MESSAGE value="for you v2.0" />
+    <MESSAGE value="версия свечи" />
+    <MESSAGE value="check" />
+    <MESSAGE value="набросок class Bullet" />
+    <MESSAGE value="проверка работы ветки и набросок пули(тот же)" />
+    <MESSAGE value="набросок пулиv2.0&#10;вроде как рисует пулю(пока квадратную, агда) но изза быстрой смены кадров не видно" />
+    <MESSAGE value="набросок пулиv2.1&#10;пули -- люди, но красиво, надо разобраться с углом" />
+    <MESSAGE value="набросок пулиv2.2&#10;пуляет людьми как бог" />
+    <MESSAGE value="набросок пулиv2.3 &#10;стреляет людьми, устает, умирает" />
+    <option name="LAST_COMMIT_MESSAGE" value="набросок пулиv2.3 &#10;стреляет людьми, устает, умирает" />
+  </component>
+</project>
