@@ -37,7 +37,6 @@ def move():
             check_and_break = False
             if i == pygame.K_w and board.check_in_stop((pos[0], pos[1] - sp)):
                 if pos[1] - sp >= 1:
-                    screen.fill((0, 0, 0))
                     board.render_level()
                     pos = (pos[0], pos[1] - sp)
                     image1 = mandalorian4_move1
@@ -45,7 +44,6 @@ def move():
                     check_and_break = True
             if i == pygame.K_a and board.check_in_stop((pos[0] - sp, pos[1])):
                 if pos[0] - sp >= 1:
-                    screen.fill((0, 0, 0))
                     board.render_level()
                     pos = (pos[0] - sp, pos[1])
                     image1 = mandalorian3_move1
@@ -53,7 +51,6 @@ def move():
                     check_and_break = True
             if i == pygame.K_s and board.check_in_stop((pos[0], pos[1] + sp)):
                 if pos[1] < size[1] - size_character[1]:
-                    screen.fill((0, 0, 0))
                     board.render_level()
                     pos = (pos[0], pos[1] + sp)
                     image1 = mandalorian1_move1
@@ -61,7 +58,6 @@ def move():
                     check_and_break = True
             if i == pygame.K_d and board.check_in_stop((pos[0] + sp, pos[1])):
                 if pos[0] <= size[0] - size_character[0]:
-                    screen.fill((0, 0, 0))
                     board.render_level()
                     pos = (pos[0] + sp, pos[1])
                     image1 = mandalorian2_move1

@@ -1,7 +1,9 @@
 import pygame
 box1 = pygame.image.load('files/textures/object/box1.png')
 box2 = pygame.image.load('files/textures/object/box2.png')
-image = {'box1': box1, 'box2': box2}
+box3 = pygame.image.load('files/textures/object/box3.png')
+golv = pygame.image.load('files/textures/object/golv.png')
+image = {'box1': box1, 'box2': box2, 'box3': box3}
 
 
 class Board:
@@ -32,28 +34,34 @@ class Board:
             self.pole[int(txt[0]) * self.width + int(txt[1])][3] = txt[3]
 
     def render_level(self):  # тут уже рисуются объекты поля
+        self.screen.fill((0, 0, 0))
         for i in range(self.height):
             for j in range(self.width):
                 if self.pole[i * self.width + j][2] == 'box':
                     self.screen.blit(image[self.pole[i * self.width + j][3]], (self.pole[i * self.width + j][1][0][0], self.pole[i * self.width + j][1][0][1] - 80))
-                if self.pole[i * self.width + j][2] == 'sp':
-                    pygame.draw.polygon(self.screen, (0, 255, 255), self.pole[i * self.width + j][1])
 
     def check_in_stop(self, character):
         global sp
-        sz = 38
         sum = 0
         znach = None
         for i in range(len(self.txt_level)):  # Проверка, в какой клетке находится игрок.
             txt = self.txt_level[i].split()
             cord = [self.pole[int(txt[0]) * self.width + int(txt[1])][1][0][0],
                     self.pole[int(txt[0]) * self.width + int(txt[1])][1][0][1]]
-            if character[0] + 40 in range(cord[0], cord[0] + sz) and character[1] + 80 in range(cord[1], cord[1] + sz + 3):
+            x1, y1 = character[0] + 2, character[1] + 80
+            if (((x1 + 38 > cord[0] and x1 + 42 < cord[0] + 40) or (x1 > cord[0] and x1 < cord[0] - 40)) and (y1 >= cord[1] and y1 <= cord[1] + 40)):
                 sum += 1
-            elif character[0] in range(cord[0], cord[0] + sz) and character[1] + 80 in range(cord[1], cord[1] + sz + 3):
+            x1, y1 = character[0] - 42, character[1] + 80
+            if (((x1 + 38 > cord[0] and x1 + 42 < cord[0] + 40) or (x1 > cord[0] and x1 < cord[0] - 40)) and (y1 >= cord[1] and y1 <= cord[1] + 40)):
                 sum += 1
-            elif character[0] in range(cord[0] - sz, cord[0] + sz) and character[1] + 80 in range(cord[1], cord[1] + sz + 3):
-                sum += 1
+            x1 = (character[0] + 20) // 40
+            y1 = (character[1] - 1) // 40 + 2
+            y2 = (character[1]) // 40 + 2
+            for i in range(len(self.txt_level)):
+                txt = self.txt_level[i].split()
+                if (txt[0] == str(y1) or txt[0] == str(y2)) and txt[1] == str(x1) and txt[2] == 'box':
+                    sum += 1
+                    break
             if sum != 0:
                 znach = self.txt_level[i].split()[2]
                 break
@@ -67,10 +75,19 @@ class Board:
             return True
 
     def on_line(self, pos):  # РЕАЛИЗМ!!!!!!!!
-        line = (pos[1] + 80) // 40
+        x1 = (pos[0] + 20) // 40
+        y1 = (pos[1]) // 40 + 2
         for i in range(len(self.txt_level)):
             txt = self.txt_level[i].split()
             cord = self.pole[int(txt[0]) * self.width + int(txt[1])][0][0]
-            if line == cord - 1 or line == cord - 2:
+            cord2 = self.pole[int(txt[0]) * self.width + int(txt[1])][0][1]
+            if (x1 == cord2 or x1 == cord2 - 1 or x1 == cord2 + 1) and y1 <= cord:
                 self.screen.blit(image[txt[3]], (self.pole[int(txt[0]) * self.width + int(txt[1])][1][0][0],
                                         self.pole[int(txt[0]) * self.width + int(txt[1])][1][0][1] - 80))
+
+    def all_coord(self):
+        spisok = list()
+        for i in range(len(self.pole)):
+            spisok.append([[self.pole[i][0][0], self.pole[i][0][1]], [self.pole[i][0][0] + 40, self.pole[i][0][1] + 40]])
+        return spisok
+
