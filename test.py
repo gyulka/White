@@ -1,39 +1,77 @@
 import pygame
 import math
 from Pole import Board
-from classes import Bullet, Person
+from classes import Bullet, Person, BRD, Objects, Box
 
 SIZE = (1280, 720)
-SIZE_PERS = [55, 80]
+SIZE_PERS = (40, 80)
 SIZE_CELL = 40
+
+
+def render_board():
+    for w in range(SIZE[0] // SIZE_CELL):
+        for h in range(SIZE[1] // SIZE_CELL):
+            BRD(all_sprites, board_sprites, wall_horizon_sprites, wall_vertical_sprites, w, h)
+
+def render_box():
+    level = 'test_level.txt'
+    txt_level = (open(level, mode='rt').read()).split(';')
+    for i in range(len(txt_level)):
+        txt = txt_level[i].split()
+        Box(all_sprites, box_sprites, txt[0:2])
+        Objects(all_sprites, object_sprites, txt[0:2], txt[3])
+
+
 
 if __name__ == '__main__':
     pygame.init()
     all_sprites = pygame.sprite.Group()
     bullet_sprites = pygame.sprite.Group()
+    box_sprites = pygame.sprite.Group()
     person_sprites = pygame.sprite.Group()
+    object_sprites = pygame.sprite.Group()
+    board_sprites = pygame.sprite.Group()
+    wall_horizon_sprites = pygame.sprite.Group()
+    wall_vertical_sprites = pygame.sprite.Group()
     shoot_coord = list()
-    size = (1280, 720)
+    size = SIZE
     screen = pygame.display.set_mode(size)
     screen.fill((0, 0, 0))
-    size_character = (40, 80)
+    size_character = SIZE_PERS
     pos = (size[0] // 2 - size_character[0] // 2, size[1] // 2 - size_character[1] // 2)
     running = True
     logo = pygame.image.load('files/textures/Logo/logo.png')
-    board = Board(screen, 1280, 720)
+    board = Board(screen, *SIZE)
     board.render_pole()
     board.lvl('test_level.txt')
     screen.blit(logo, (0, 0))
+    splash = True  # заставка, ждем начала игры
+    while splash:
+        for event in pygame.event.get():
+            if event.type == pygame.QUIT:
+                running = False
+                splash = False
+            if event.type == pygame.MOUSEBUTTONDOWN:
+                splash = False
+            if event.type == pygame.KEYDOWN:
+                splash = False
+        all_sprites.draw(screen)
+        pygame.display.flip()
+    render_board()
+    render_box()
+    player = Person(all_sprites, person_sprites, wall_horizon_sprites, wall_vertical_sprites)
+    screen.fill((0, 0, 0))
     while running:
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 running = False
             if event.type == pygame.MOUSEBUTTONDOWN:
-                bullet = Bullet(all_sprites, bullet_sprites, pos, event.pos, screen, event)
+                bullet = Bullet(all_sprites, bullet_sprites, wall_horizon_sprites, wall_vertical_sprites, pos, event.pos, screen, event)
             if event.type == pygame.KEYDOWN:
-                pass
+                player.move(event.key)
             if event.type == pygame.KEYUP:
-                pass
+                player.down(event.key)
+        screen.fill((255, 255, 255))
         all_sprites.draw(screen)
         all_sprites.update()
         pygame.display.flip()
