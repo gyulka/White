@@ -4,7 +4,7 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="24b1f7ca-00ee-488b-bdb6-97f1039dae0e" name="Default Changelist" comment="1)соеденяю логи">
+    <list default="true" id="24b1f7ca-00ee-488b-bdb6-97f1039dae0e" name="Default Changelist" comment="3) все в спрайт, уже есть обекты остались только взаимодействие с обектами">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/classes.py" beforeDir="false" afterPath="$PROJECT_DIR$/classes.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/test.py" beforeDir="false" afterPath="$PROJECT_DIR$/test.py" afterDir="false" />
@@ -42,7 +42,28 @@
     <property name="settings.editor.selected.configurable" value="com.jetbrains.python.configuration.PyActiveSdkModuleConfigurable" />
     <property name="settings.editor.splitter.proportion" value="0.2311609" />
   </component>
-  <component name="RunManager">
+  <component name="RunManager" selected="Python.test">
+    <configuration name="f1" type="PythonConfigurationType" factoryName="Python" temporary="true" nameIsGenerated="true">
+      <module name="rogalik" />
+      <option name="INTERPRETER_OPTIONS" value="" />
+      <option name="PARENT_ENVS" value="true" />
+      <envs>
+        <env name="PYTHONUNBUFFERED" value="1" />
+      </envs>
+      <option name="SDK_HOME" value="" />
+      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$/../Sve4ka/Новая папка" />
+      <option name="IS_MODULE_SDK" value="false" />
+      <option name="ADD_CONTENT_ROOTS" value="true" />
+      <option name="ADD_SOURCE_ROOTS" value="true" />
+      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/../Sve4ka/Новая папка/f1.py" />
+      <option name="PARAMETERS" value="" />
+      <option name="SHOW_COMMAND_LINE" value="false" />
+      <option name="EMULATE_TERMINAL" value="false" />
+      <option name="MODULE_MODE" value="false" />
+      <option name="REDIRECT_INPUT" value="false" />
+      <option name="INPUT_FILE" value="" />
+      <method v="2" />
+    </configuration>
     <configuration name="test" type="PythonConfigurationType" factoryName="Python" temporary="true" nameIsGenerated="true">
       <option name="INTERPRETER_OPTIONS" value="" />
       <option name="PARENT_ENVS" value="true" />
@@ -67,7 +88,7 @@
     <recent_temporary>
       <list>
         <item itemvalue="Python.test" />
-        <item itemvalue="Python.test" />
+        <item itemvalue="Python.f1" />
         <item itemvalue="Python.test" />
         <item itemvalue="Python.test" />
         <item itemvalue="Python.test" />
@@ -181,7 +202,14 @@
       <option name="project" value="LOCAL" />
       <updated>1611242205824</updated>
     </task>
-    <option name="localTasksCounter" value="15" />
+    <task id="LOCAL-00015" summary="3) все в спрайт, уже есть обекты остались только взаимодействие с обектами">
+      <created>1611254320248</created>
+      <option name="number" value="00015" />
+      <option name="presentableId" value="LOCAL-00015" />
+      <option name="project" value="LOCAL" />
+      <updated>1611254320248</updated>
+    </task>
+    <option name="localTasksCounter" value="16" />
     <servers />
   </component>
   <component name="Vcs.Log.Tabs.Properties">
@@ -256,6 +284,7 @@
     <MESSAGE value="набросок пулиv2.2&#10;пуляет людьми как бог" />
     <MESSAGE value="набросок пулиv2.3 &#10;стреляет людьми, устает, умирает" />
     <MESSAGE value="1)соеденяю логи" />
-    <option name="LAST_COMMIT_MESSAGE" value="1)соеденяю логи" />
+    <MESSAGE value="3) все в спрайт, уже есть обекты остались только взаимодействие с обектами" />
+    <option name="LAST_COMMIT_MESSAGE" value="3) все в спрайт, уже есть обекты остались только взаимодействие с обектами" />
   </component>
 </project>

@@ -8,13 +8,14 @@ SIZE_CELL = 40
 
 
 class Bullet(pygame.sprite.Sprite):
-    def __init__(self, group, bullets, wall_h, wall_v, otkuda, kuda, sc, event, otraj=3):
+    def __init__(self, group, bullets, obj, wall_h, wall_v, otkuda, kuda, sc, event, otraj=3):
         super().__init__(group)
         self.add(bullets)
         self.wall = [wall_h, wall_v]
+        self.obj = obj
         self.otkuda = otkuda
         self.kuda = kuda
-        self.velocity = 15
+        self.velocity = 10
         self.screen = sc
         self.fps = 60
         self.height, self.width = SIZE
@@ -44,9 +45,18 @@ class Bullet(pygame.sprite.Sprite):
         if pygame.sprite.spritecollideany(self, self.wall[1]):
             self.kolvo_otraj += 1
             self.moving[1] = - self.moving[1]
+
+        if pygame.sprite.spritecollideany(self, self.obj):
+            self.kolvo_otraj += 1
+            self.moving[1] = - self.moving[1]
+            self.moving[0] = - self.moving[0]
         if self.kolvo_otraj == self.otraj or self.isshootedByPlayer():
             self.kill()
+        self.pos = self.rect
         self.rect = self.rect.move(*self.moving)
+
+    def check(self, skem):
+        pass
 
     def isshootedByPlayer(self):
         return False
@@ -59,15 +69,20 @@ class Person(pygame.sprite.Sprite):
     mandalorian3_move1 = pygame.image.load('files/textures/main_charachter_1/mandalorian_left_move1.png')
     mandalorian4_move1 = pygame.image.load('files/textures/main_charachter_1/mandalorian_back_move1.png')
 
-    def __init__(self, group, person, wall_h, wall_v):
+    def __init__(self, group, person, wall_h, wall_v, draww, box, boxes):
         super().__init__(group)
         self.add(person)
+        self.add(draww)
+        self.box = box
+        self.boxes = boxes
+        self.dop = 0
         self.wall = [wall_h, wall_v]
         self.image = Person.mandalorian1
         self.rect = self.image.get_rect()
         self.rect.x = 620
         self.rect.y = 320
         self.kak = [0, 0]  # как менять координату перса
+        self.pos = self.rect
 
     def move(self, event):  # изменение какртинки в моем понимании произойдет на восьмом уроке, где нас этому научат
         if event == 119:  # w
@@ -106,16 +121,28 @@ class Person(pygame.sprite.Sprite):
             self.rect.x -= self.kak[0]
         if pygame.sprite.spritecollideany(self, self.wall[1]):
             self.rect.y -= self.kak[1]
+        if pygame.sprite.spritecollideany(self, self.box):
+            for elem in self.boxes:
+                if elem[0] - 40 <= self.rect.x <= elem[0] + 40:
+                    self.rect.x -= self.kak[0]
+                if elem[1] - 40 <= self.rect.y <= elem[1]:
+                    self.rect.y -= self.kak[1]
+                    print(elem[1], self.rect.y)
+        self.pos = self.rect
 
 
 class Objects(pygame.sprite.Sprite):
-    def __init__(self, group, obj, pos, image):
+    def __init__(self, group, obj, draww, pos, image):
         super().__init__(group)
         self.add(obj)
+        self.add(draww)
         self.image = pygame.image.load(f'files/textures/object/{image}.png')
         self.rect = self.image.get_rect()
         self.rect.x = int(pos[1]) * 40
         self.rect.y = int(pos[0]) * 40
+        self.pos = self.rect
+        self.dop = 5
+        print(self.rect)
 
 
 class Box(pygame.sprite.Sprite):
@@ -126,6 +153,7 @@ class Box(pygame.sprite.Sprite):
         self.rect = self.image.get_rect()
         self.rect.x = int(pos[1]) * 40
         self.rect.y = int(pos[0]) * 40 + 80
+        self.pos = self.rect
 
 
 class BRD(pygame.sprite.Sprite):
@@ -141,3 +169,4 @@ class BRD(pygame.sprite.Sprite):
         self.rect = self.image.get_rect()
         self.rect.x = w * 40
         self.rect.y = h * 40
+        self.pos = self.rect
