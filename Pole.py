@@ -2,8 +2,9 @@ import pygame
 box1 = pygame.image.load('files/textures/object/box1.png')
 box2 = pygame.image.load('files/textures/object/box2.png')
 box3 = pygame.image.load('files/textures/object/box3.png')
+box4 = pygame.image.load('files/textures/object/box4.png')
 golv = pygame.image.load('files/textures/object/golv.png')
-image = {'box1': box1, 'box2': box2, 'box3': box3}
+image = {'box1': box1, 'box2': box2, 'box3': box3, 'box4': box4}
 
 
 class Board:
@@ -40,6 +41,9 @@ class Board:
                 if self.pole[i * self.width + j][2] == 'box':
                     self.screen.blit(image[self.pole[i * self.width + j][3]], (self.pole[i * self.width + j][1][0][0], self.pole[i * self.width + j][1][0][1] - 80))
 
+    def render_pole_by_list(self, spisok):
+        pass
+
     def check_in_stop(self, character):
         global sp
         sum = 0
@@ -55,7 +59,7 @@ class Board:
             if (((x1 + 38 > cord[0] and x1 + 42 < cord[0] + 40) or (x1 > cord[0] and x1 < cord[0] - 40)) and (y1 >= cord[1] and y1 <= cord[1] + 40)):
                 sum += 1
             x1 = (character[0] + 20) // 40
-            y1 = (character[1] - 1) // 40 + 2
+            y1 = (character[1] - 4) // 40 + 2
             y2 = (character[1]) // 40 + 2
             for i in range(len(self.txt_level)):
                 txt = self.txt_level[i].split()
