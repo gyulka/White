@@ -1,1 +1,1 @@
-import test
+print('sve4ka')
