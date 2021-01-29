@@ -1,2 +1,2 @@
 print('Öst arbetar')
-print('sve4ka')
+print('sve4ka 1')
