@@ -1,10 +1,14 @@
 import pygame
-box1 = pygame.image.load('files/textures/object/box1.png')
-box2 = pygame.image.load('files/textures/object/box2.png')
-box3 = pygame.image.load('files/textures/object/box3.png')
-box4 = pygame.image.load('files/textures/object/box4.png')
-golv = pygame.image.load('files/textures/object/golv.png')
-image = {'box1': box1, 'box2': box2, 'box3': box3, 'box4': box4}
+import random
+box1 = pygame.image.load('data/textures/object/box1.png')
+box2 = pygame.image.load('data/textures/object/box2.png')
+box3 = pygame.image.load('data/textures/object/box3.png')
+box4 = pygame.image.load('data/textures/object/box4.png')
+golv = pygame.image.load('data/textures/object/golv.png')
+golv2 = pygame.image.load('data/textures/object/golv2.png')
+golv3 = pygame.image.load('data/textures/object/golv3.png')
+wol = pygame.image.load('data/textures/object/wol.png')
+image = {'box1': box1, 'box2': box2, 'box3': box3, 'box4': box4, 'golv': golv, 'golv2': golv2, 'golv3': golv3, 'wol': wol}
 
 
 class Board:
@@ -25,7 +29,7 @@ class Board:
                 coor4 = (i + 1) * self.cell_size
                 coor = ((coor1, coor2), (coor3, coor2), (coor3, coor4), (coor1, coor4))
                 if len(self.pole) != self.width * self.height:
-                    self.pole.append([(i, j), coor, None, None])
+                    self.pole.append([(i, j), coor, None, 'golv'])
 
     def lvl(self, level):  # создание значения уровня из вне по координатам.
         self.txt_level = (open(level, mode='rt').read()).split(';')
@@ -34,15 +38,44 @@ class Board:
             self.pole[int(txt[0]) * self.width + int(txt[1])][2] = txt[2]
             self.pole[int(txt[0]) * self.width + int(txt[1])][3] = txt[3]
 
-    def render_level(self):  # тут уже рисуются объекты поля
-        self.screen.fill((0, 0, 0))
+    def render_level(self):  # тут уже рисуются объекты поля, один раз используется
         for i in range(self.height):
             for j in range(self.width):
                 if self.pole[i * self.width + j][2] == 'box':
+                    self.screen.blit(golv, (
+                    self.pole[i * self.width + j][1][0][0], self.pole[i * self.width + j][1][0][1] - 80))
+                    self.screen.blit(image[self.pole[i * self.width + j][3]], (self.pole[i * self.width + j][1][0][0], self.pole[i * self.width + j][1][0][1] - 80))
+                elif self.pole[i * self.width + j][2] != 'box' and i != 0:
+                    randomwol = random.choice(['golv', 'golv2', 'golv3'])
+                    self.screen.blit(image[randomwol], (self.pole[i * self.width + j][1][0][0], self.pole[i * self.width + j][1][0][1] - 80))
+                    self.pole[i * self.width + j][3] = randomwol
+                if i == 0:
+                    self.screen.blit(wol, (self.pole[i * self.width + j][1][0][0], self.pole[i * self.width + j][1][0][1] - 80))
+                    self.pole[i * self.width + j][3] = 'wol'
+
+    def three_on_four(self, cord):
+        sector1 = (cord[1] // 40, cord[0] // 40)
+        sector2 = ((cord[1] + 80) // 40 - 1, cord[0] // 40)
+        sector3 = ((cord[1] + 80) // 40, cord[0] // 40)
+        sector4 = (cord[1] // 40, (cord[0] + 40) // 40)
+        sector5 = ((cord[1] + 80) // 40 - 1, (cord[0] + 40) // 40)
+        sector6 = ((cord[1] + 80) // 40, (cord[0] + 40) // 40)
+        sector7 = (cord[1] // 40, cord[0] // 40 - 1)
+        sector8 = ((cord[1] + 80) // 40 - 1, cord[0] // 40 - 1)
+        sector9 = ((cord[1] + 80) // 40, cord[0] // 40 - 1)
+        sector10 = (cord[1] // 40 - 1, (cord[0] + 40) // 40)
+        sector11 = ((cord[1] + 80) // 40 - 3, (cord[0] + 40) // 40 - 1)
+        sector12 = ((cord[1] + 80) // 40 - 3, (cord[0] + 40) // 40 - 2)
+        all_sector = [sector1,  sector2, sector3, sector4, sector5, sector6, sector7, sector8, sector9, sector10, sector11, sector12]
+        for i in range(self.height):
+            for j in range(self.width):
+                if self.pole[i * self.width + j][0] in all_sector and self.pole[i * self.width + j][3] != None and self.pole[i * self.width + j][3] != 'box':
+                    self.screen.blit(image[self.pole[i * self.width + j][3]], (self.pole[i * self.width + j][1][0][0], self.pole[i * self.width + j][1][0][1] - 80))
+                if self.pole[i * self.width + j][2] == 'box':
+                    self.screen.blit(golv, (self.pole[i * self.width + j][1][0][0], self.pole[i * self.width + j][1][0][1] - 80))
                     self.screen.blit(image[self.pole[i * self.width + j][3]], (self.pole[i * self.width + j][1][0][0], self.pole[i * self.width + j][1][0][1] - 80))
 
-    def render_pole_by_list(self, spisok):
-        pass
+
 
     def check_in_stop(self, character):
         global sp
