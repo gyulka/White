@@ -1,86 +1,53 @@
 import pygame
-import math
 from Pole import Board
+import os
 
 
-class Bullet:
-    def __init__(self, otkuda, kuda, velocity):
-        self.otkuda = otkuda
-        self.kuda = kuda
-        self.velocity = velocity
-        self.fps = 60
-        #  возможно будет двигатся лишь на положительную сторону по оси у(тогда надо попробовать или иф или арксинус и теорему пифагора
-        #  куда(?) нужно менять координату для каждого кадра
-        self.alfa = [math.atan(
-            (self.kuda[0] - self.otkuda[0]) / (self.kuda[1] - self.otkuda[1]))]  # нашли направление вектора(градус)
-        self.moving = [self.velocity * math.sin(self.alfa[0]),
-                       self.velocity * math.cos(self.alfa[1])]  # как изменяется координата
+def load_image(name, color_key=None):  # Эта функция знакома всем до боли
+    fullname = os.path.join(r'data\textures\main_charachter_1', name)
+    try:
+        image = pygame.image.load(fullname)
+    except pygame.error as message:
+        print('Cannot load image:', name)
+        raise SystemExit(message)
 
-    def render(self):
-        pass
-
-    def move_bullet(self):
-        pass
-
-    def isshootedByPlayer(self):
-        pass
+    if color_key is not None:
+        if color_key == -1:
+            color_key = image.get_at((0, 0))
+        image.set_colorkey(color_key)
+    else:
+        image = image.convert_alpha()
+    return image
 
 
 def move():
-    global wait, pos, stap
+    global wait, pos, stap, character, character_group
     for i in flags:
         wait += 1
         if flags[i]:
-            wait = 0
-            image1 = mandalorian1_move1
-            image2 = mandalorian1_move2
             check_and_break = False
-            if i == pygame.K_w and board.check_in_stop((pos[0], pos[1] - sp)):
-                if pos[1] - sp >= 1:
-                    screen.fill((0, 0, 0))
-                    board.render_level()
-                    pos = (pos[0], pos[1] - sp)
-                    image1 = mandalorian4_move1
-                    image2 = mandalorian4_move2
+            if i == pygame.K_w and board.check_in_stop((character.rect.x, character.rect.y - sp)):
+                if character.rect.y - sp >= 1:
+                    character.rect.y -= sp
+                    character.image = load_image('Mandalorian_back_move1.png')
                     check_and_break = True
-            if i == pygame.K_a and board.check_in_stop((pos[0] - sp, pos[1])):
-                if pos[0] - sp >= 1:
-                    screen.fill((0, 0, 0))
-                    board.render_level()
-                    pos = (pos[0] - sp, pos[1])
-                    image1 = mandalorian3_move1
-                    image2 = mandalorian3_move2
+            if i == pygame.K_a and board.check_in_stop((character.rect.x - sp, character.rect.y)):
+                if character.rect.x - sp >= 1:
+                    character.rect.x -= sp
+                    character.image = load_image('Mandalorian_left_move1.png')
                     check_and_break = True
-            if i == pygame.K_s and board.check_in_stop((pos[0], pos[1] + sp)):
-                if pos[1] < size[1] - size_character[1]:
-                    screen.fill((0, 0, 0))
-                    board.render_level()
-                    pos = (pos[0], pos[1] + sp)
-                    image1 = mandalorian1_move1
-                    image2 = mandalorian1_move2
+            if i == pygame.K_s and board.check_in_stop((character.rect.x, character.rect.y + sp)):
+                if character.rect.y < size[1] - size_character[1]:
+                    character.rect.y += sp
+                    character.image = load_image('Mandalorian_move1.png')
                     check_and_break = True
-            if i == pygame.K_d and board.check_in_stop((pos[0] + sp, pos[1])):
-                if pos[0] <= size[0] - size_character[0]:
-                    screen.fill((0, 0, 0))
-                    board.render_level()
-                    pos = (pos[0] + sp, pos[1])
-                    image1 = mandalorian2_move1
-                    image2 = mandalorian2_move2
+            if i == pygame.K_d and board.check_in_stop((character.rect.x + sp, character.rect.y)):
+                if character.rect.x <= size[0] - size_character[0]:
+                    character.rect.x += sp
+                    character.image = load_image('Mandalorian_right_move1.png')
                     check_and_break = True
             if i and check_and_break:
-                stap += 1
-                if stap <= 20:
-                    screen.blit(image1, pos)
-                elif stap <= 40:
-                    screen.blit(image2, pos)
-                else:
-                    screen.blit(image2, pos)
-                    stap = 0
-        if wait >= 50:
-            screen.fill((0, 0, 0))
-            board.render_level()
-            screen.blit(mandalorian1, pos)
-        board.on_line(pos)
+                pass
 
 
 def shoot(pos1, pos2):
@@ -93,6 +60,7 @@ def shoot(pos1, pos2):
 
 
 if __name__ == '__main__':
+    #  ------------------------------------------- Придвижу, что эта инфа никому не интересна
     pygame.init()
     shoot_coord = list()
     size = (1280, 720)
@@ -107,26 +75,21 @@ if __name__ == '__main__':
     wait = 0
     sp = 2
     smome = False
-    logo = pygame.image.load('files/textures/Logo/logo.png')
-    mandalorian1 = pygame.image.load('files/textures/main_charachter_1/mandalorian.png')
-    mandalorian1_move1 = pygame.image.load('files/textures/main_charachter_1/mandalorian_move1.png')
-    mandalorian1_move2 = pygame.image.load('files/textures/main_charachter_1/mandalorian_move2.png')
-    mandalorian1_shot = pygame.image.load('files/textures/main_charachter_1/mandalorian_shot.png')
-
-    mandalorian2_move1 = pygame.image.load('files/textures/main_charachter_1/mandalorian_right_move1.png')
-    mandalorian2_move2 = pygame.image.load('files/textures/main_charachter_1/mandalorian_right_move2.png')
-    mandalorian2_shot = pygame.image.load('files/textures/main_charachter_1/mandalorian_right_shot.png')
-
-    mandalorian3_move1 = pygame.image.load('files/textures/main_charachter_1/mandalorian_left_move1.png')
-    mandalorian3_move2 = pygame.image.load('files/textures/main_charachter_1/mandalorian_left_move2.png')
-    mandalorian3_shot = pygame.image.load('files/textures/main_charachter_1/mandalorian_left_shot.png')
-
-    mandalorian4_move1 = pygame.image.load('files/textures/main_charachter_1/mandalorian_back_move1.png')
-    mandalorian4_move2 = pygame.image.load('files/textures/main_charachter_1/mandalorian_back_move2.png')
+    #  ------------------------------------------- изображения...
+    logo = pygame.image.load('data/textures/Logo/logo.png')
+    #  -------------------------------------------
+    character_group = pygame.sprite.Group()
+    img_character = load_image('Mandalorian.png')
+    character = pygame.sprite.Sprite(character_group)
+    character.image = img_character
+    character.rect = character.image.get_rect()
+    character.rect.x = 620
+    character.rect.y = 320
     board = Board(screen, 1280, 720)
     board.render_pole()
     board.lvl('test_level.txt')
-    screen.blit(logo, (0, 0))
+    screen.fill((255, 255, 255))
+    board.render_level()
     while running:
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
@@ -139,5 +102,8 @@ if __name__ == '__main__':
             if event.type == pygame.KEYUP:
                 flags[event.key] = False
         move()
+        board.three_on_four([character.rect.x, character.rect.y])
+        character_group.draw(screen)
+        board.on_line([character.rect.x, character.rect.y])
         pygame.display.flip()
     pygame.quit()
