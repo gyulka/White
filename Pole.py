@@ -1,4 +1,6 @@
 import pygame
+
+import consts
 import random
 box1 = pygame.image.load('data/textures/object/box1.png')
 box2 = pygame.image.load('data/textures/object/box2.png')
@@ -11,11 +13,12 @@ wol = pygame.image.load('data/textures/object/wol.png')
 image = {'box1': box1, 'box2': box2, 'box3': box3, 'box4': box4, 'golv': golv, 'golv2': golv2, 'golv3': golv3, 'wol': wol}
 
 
+
 class Board:
     def __init__(self, screen, width, size):
         self.screen = screen
-        self.width = width // 40
-        self.height = size // 40
+        self.width = consts.b
+        self.height = consts.a
         self.cell_size = 40
         self.pole = list()
         self.txt_level = None
@@ -42,6 +45,7 @@ class Board:
         for i in range(self.height):
             for j in range(self.width):
                 if self.pole[i * self.width + j][2] == 'box':
+
                     self.screen.blit(golv, (
                     self.pole[i * self.width + j][1][0][0], self.pole[i * self.width + j][1][0][1] - 80))
                     self.screen.blit(image[self.pole[i * self.width + j][3]], (self.pole[i * self.width + j][1][0][0], self.pole[i * self.width + j][1][0][1] - 80))
@@ -74,7 +78,6 @@ class Board:
                 if self.pole[i * self.width + j][2] == 'box':
                     self.screen.blit(golv, (self.pole[i * self.width + j][1][0][0], self.pole[i * self.width + j][1][0][1] - 80))
                     self.screen.blit(image[self.pole[i * self.width + j][3]], (self.pole[i * self.width + j][1][0][0], self.pole[i * self.width + j][1][0][1] - 80))
-
 
 
     def check_in_stop(self, character):
@@ -121,10 +124,8 @@ class Board:
             if (x1 == cord2 or x1 == cord2 - 1 or x1 == cord2 + 1) and y1 <= cord:
                 self.screen.blit(image[txt[3]], (self.pole[int(txt[0]) * self.width + int(txt[1])][1][0][0],
                                         self.pole[int(txt[0]) * self.width + int(txt[1])][1][0][1] - 80))
-
     def all_coord(self):
         spisok = list()
         for i in range(len(self.pole)):
             spisok.append([[self.pole[i][0][0], self.pole[i][0][1]], [self.pole[i][0][0] + 40, self.pole[i][0][1] + 40]])
         return spisok
-
