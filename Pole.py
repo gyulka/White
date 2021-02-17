@@ -13,7 +13,6 @@ wol = pygame.image.load('data/textures/object/wol.png')
 image = {'box1': box1, 'box2': box2, 'box3': box3, 'box4': box4, 'golv': golv, 'golv2': golv2, 'golv3': golv3, 'wol': wol}
 
 
-
 class Board:
     def __init__(self, screen, width, size):
         self.screen = screen
@@ -39,23 +38,23 @@ class Board:
         for i in range(len(self.txt_level)):
             txt = self.txt_level[i].split()
             self.pole[int(txt[0]) * self.width + int(txt[1])][2] = txt[2]
-            self.pole[int(txt[0]) * self.width + int(txt[1])][3] = txt[3]
+            randomwol = random.choice(['box1', 'box2', 'box3', 'box4'])
+            self.pole[int(txt[0]) * self.width + int(txt[1])][3] = randomwol
 
     def render_level(self):  # тут уже рисуются объекты поля, один раз используется
         for i in range(self.height):
             for j in range(self.width):
                 if self.pole[i * self.width + j][2] == 'box':
-
-                    self.screen.blit(golv, (
-                    self.pole[i * self.width + j][1][0][0], self.pole[i * self.width + j][1][0][1] - 80))
+                    self.screen.blit(golv, (self.pole[i * self.width + j][1][0][0], self.pole[i * self.width + j][1][0][1] - 80))
                     self.screen.blit(image[self.pole[i * self.width + j][3]], (self.pole[i * self.width + j][1][0][0], self.pole[i * self.width + j][1][0][1] - 80))
-                elif self.pole[i * self.width + j][2] != 'box' and i != 0:
+                if self.pole[i * self.width + j][2] == 'wall':
+                    self.screen.blit(golv, (self.pole[i * self.width + j][1][0][0], self.pole[i * self.width + j][1][0][1] - 80))
+                    self.screen.blit(image['wol'], (self.pole[i * self.width + j][1][0][0], self.pole[i * self.width + j][1][0][1] - 80))
+                    self.pole[i * self.width + j][3] = 'wol'
+                elif self.pole[i * self.width + j][2] != 'box':
                     randomwol = random.choice(['golv', 'golv2', 'golv3'])
                     self.screen.blit(image[randomwol], (self.pole[i * self.width + j][1][0][0], self.pole[i * self.width + j][1][0][1] - 80))
                     self.pole[i * self.width + j][3] = randomwol
-                if i == 0:
-                    self.screen.blit(wol, (self.pole[i * self.width + j][1][0][0], self.pole[i * self.width + j][1][0][1] - 80))
-                    self.pole[i * self.width + j][3] = 'wol'
 
     def three_on_four(self, cord):
         sector1 = (cord[1] // 40, cord[0] // 40)
@@ -78,7 +77,6 @@ class Board:
                 if self.pole[i * self.width + j][2] == 'box':
                     self.screen.blit(golv, (self.pole[i * self.width + j][1][0][0], self.pole[i * self.width + j][1][0][1] - 80))
                     self.screen.blit(image[self.pole[i * self.width + j][3]], (self.pole[i * self.width + j][1][0][0], self.pole[i * self.width + j][1][0][1] - 80))
-
 
     def check_in_stop(self, character):
         global sp
@@ -122,10 +120,16 @@ class Board:
             cord = self.pole[int(txt[0]) * self.width + int(txt[1])][0][0]
             cord2 = self.pole[int(txt[0]) * self.width + int(txt[1])][0][1]
             if (x1 == cord2 or x1 == cord2 - 1 or x1 == cord2 + 1) and y1 <= cord:
-                self.screen.blit(image[txt[3]], (self.pole[int(txt[0]) * self.width + int(txt[1])][1][0][0],
+                for j in range(len(self.pole)):
+                    if (cord, cord2) == self.pole[j][0]:
+                        img = self.pole[j][3]
+                        break
+                self.screen.blit(image[img], (self.pole[int(txt[0]) * self.width + int(txt[1])][1][0][0],
                                         self.pole[int(txt[0]) * self.width + int(txt[1])][1][0][1] - 80))
+
     def all_coord(self):
         spisok = list()
         for i in range(len(self.pole)):
             spisok.append([[self.pole[i][0][0], self.pole[i][0][1]], [self.pole[i][0][0] + 40, self.pole[i][0][1] + 40]])
         return spisok
+
