@@ -1,6 +1,53 @@
 import pygame
 from Pole import Board
-import os
+import os, math
+
+
+class Bullet(pygame.sprite.Sprite):
+    def __init__(self, group, otkuda, kuda, sc, event, otraj=3):
+        super().__init__(group)
+        self.otkuda = otkuda
+        self.kuda = kuda
+        self.velocity = 10
+        self.screen = sc
+        self.fps = 60
+        self.height, self.width = 1280, 720
+        self.otraj = otraj
+        self.kolvo_otraj = -1
+        self.size_bullet = 8
+        #  возможно будет двигатся лишь на положительную сторону
+        #  по оси у(тогда надо попробовать или иф или арксинус и теорему пифагора
+        #  куда(?) нужно менять координату для каждого кадра
+        self.alfa = math.atan(
+            (self.kuda[0] - self.otkuda[0]) / (self.kuda[1] - self.otkuda[1]))  # нашли направление вектора(градус)
+        self.moving = [
+            -self.velocity * math.sin(self.alfa) * (self.otkuda[1] - self.kuda[1]) // abs(
+                self.otkuda[1] - self.kuda[1]),
+            -self.velocity * math.cos(self.alfa) * (self.otkuda[1] - self.kuda[1]) // abs(
+                self.otkuda[1] - self.kuda[1])]
+        self.image = pygame.image.load('data/textures/mini_object/shoot1.png')
+        self.rect = self.image.get_rect()
+        self.rect.x = otkuda[0]
+        self.rect.y = otkuda[1]
+        self.update(event)
+
+    def update(self, *args):
+        if self.rect[0] + self.moving[0] <= 0:
+            self.kolvo_otraj += 1
+            self.moving[0] = - self.moving[0]
+        if self.rect[0] + self.moving[0] >= 1280:
+            self.kolvo_otraj += 1
+            self.moving[0] = - self.moving[1]
+        if self.rect[1] + self.moving[1] <= 0:
+            self.kolvo_otraj += 1
+            self.moving[1] = - self.moving[1]
+        if self.rect[1] + self.moving[1] >= 720:
+            self.kolvo_otraj += 1
+            self.moving[1] = - self.moving[1]
+        if self.kolvo_otraj >= self.otraj:
+            self.kill()
+        self.pos = self.rect
+        self.rect = self.rect.move(*self.moving)
 
 
 def load_image(name, color_key=None):  # Эта функция знакома всем до боли
@@ -90,12 +137,13 @@ if __name__ == '__main__':
     board.lvl('files/levels/1_3_1.txt')
     screen.fill((255, 255, 255))
     board.render_level()
+    bullet_group = pygame.sprite.Group()
     while running:
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 running = False
             if event.type == pygame.MOUSEBUTTONDOWN:
-                pass
+                shooting = Bullet(bullet_group, character.rect, event.pos, screen, event)
             if event.type == pygame.KEYDOWN:
                 flags[event.key] = True
                 smome = True
@@ -104,6 +152,10 @@ if __name__ == '__main__':
         move()
         board.three_on_four([character.rect.x, character.rect.y])
         character_group.draw(screen)
+        try:
+            shooting.update()
+        except Exception:
+            pass
         board.on_line([character.rect.x, character.rect.y])
         pygame.display.flip()
     pygame.quit()
