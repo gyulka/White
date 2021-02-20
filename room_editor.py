@@ -15,8 +15,9 @@ class Board:
         self.board[0] = [1] * width
         self.board[-1] = [1] * width
         for i in range(height):
-            self.board[i][0] = 1
-            self.board[i][-1] = 1
+            if height - 1 > i > 0:
+                self.board[i][0] = 2
+                self.board[i][-1] = 2
 
         # значения по умолчанию
         self.left = 10
@@ -79,12 +80,14 @@ class Board:
         self.board[pos[0]][pos[1]] = 3
 
     def save(self, text):
+        print(self.board)
         dict1 = {1: 'wall', 2: 'box', 3: 'end'}
         f1 = open(text, 'w')
-        for i in enumerate(self.board):
-            for j in enumerate(i[1]):
-                if j[1]:
-                    f1.write(f'{i[0]} {j[1]} {dict1[j[1]]};')
+        for i in range(len(self.board)):
+            for j in range(len(self.board[0])):
+                if self.board[i][j]:
+                    print(i, j, self.board[i][j])
+                    f1.write(f'{i} {j} {dict1[self.board[i][j]]};')
 
 
 class Mywidget(QWidget):

@@ -134,7 +134,7 @@ if __name__ == '__main__':
     character.rect.y = 320
     board = Board(screen, 1280, 720)
     board.render_pole()
-    board.lvl('files/levels/1_3_1.txt')
+    board.lvl('files/levels/3_1_1.txt')
     screen.fill((255, 255, 255))
     board.render_level()
     bullet_group = pygame.sprite.Group()

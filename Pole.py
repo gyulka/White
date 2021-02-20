@@ -37,6 +37,7 @@ class Board:
         self.txt_level = (open(level, mode='rt').read()).split(';')
         for i in range(len(self.txt_level)):
             txt = self.txt_level[i].split()
+            print(txt, self.pole[int(txt[0]) * self.width + int(txt[1])])
             self.pole[int(txt[0]) * self.width + int(txt[1])][2] = txt[2]
             randomwol = random.choice(['box1', 'box2', 'box3', 'box4'])
             self.pole[int(txt[0]) * self.width + int(txt[1])][3] = randomwol
