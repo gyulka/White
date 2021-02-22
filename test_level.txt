@@ -1,1 +1,1 @@
-2 7 box box4;10 5 box;5 10 box;6 20 box
+2 7 box;10 5 box;5 10 box;6 20 box
