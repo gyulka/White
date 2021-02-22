@@ -1,11 +1,13 @@
 import pygame
+import os
+import math
 from Pole import Board
-import os, math
 
 
 class Bullet(pygame.sprite.Sprite):
-    def __init__(self, group, otkuda, kuda, sc, event, otraj=3):
-        super().__init__(group)
+    def __init__(self, group, bl, otkuda, kuda, sc, event, otraj=3):
+        super().__init__(bl)
+        self.add(group)
         self.otkuda = otkuda
         self.kuda = kuda
         self.velocity = 10
@@ -27,8 +29,8 @@ class Bullet(pygame.sprite.Sprite):
                 self.otkuda[1] - self.kuda[1])]
         self.image = pygame.image.load('data/textures/mini_object/shoot1.png')
         self.rect = self.image.get_rect()
-        self.rect.x = otkuda[0]
-        self.rect.y = otkuda[1]
+        self.rect.x = otkuda[0] + 16
+        self.rect.y = otkuda[1] + 40
         self.update(event)
 
     def update(self, *args):
@@ -37,7 +39,7 @@ class Bullet(pygame.sprite.Sprite):
             self.moving[0] = - self.moving[0]
         if self.rect[0] + self.moving[0] >= 1280:
             self.kolvo_otraj += 1
-            self.moving[0] = - self.moving[1]
+            self.moving[0] = - self.moving[0]
         if self.rect[1] + self.moving[1] <= 0:
             self.kolvo_otraj += 1
             self.moving[1] = - self.moving[1]
@@ -46,6 +48,9 @@ class Bullet(pygame.sprite.Sprite):
             self.moving[1] = - self.moving[1]
         if self.kolvo_otraj >= self.otraj:
             self.kill()
+            print(True)
+
+        print(self.rect)
         self.pos = self.rect
         self.rect = self.rect.move(*self.moving)
 
@@ -125,6 +130,18 @@ if __name__ == '__main__':
     #  ------------------------------------------- изображения...
     logo = pygame.image.load('data/textures/Logo/logo.png')
     #  -------------------------------------------
+    screen.blit(logo, (0, 0))
+    splash = True  # заставка, ждем начала игры
+    while splash:
+        for event in pygame.event.get():
+            if event.type == pygame.QUIT:
+                running = False
+                splash = False
+            if event.type == pygame.MOUSEBUTTONDOWN:
+                splash = False
+            if event.type == pygame.KEYDOWN:
+                splash = False
+        pygame.display.flip()
     character_group = pygame.sprite.Group()
     img_character = load_image('Mandalorian.png')
     character = pygame.sprite.Sprite(character_group)
@@ -134,16 +151,18 @@ if __name__ == '__main__':
     character.rect.y = 320
     board = Board(screen, 1280, 720)
     board.render_pole()
-    board.lvl('files/levels/4_3_1.txt')
+    board.lvl('test_level.txt')
     screen.fill((255, 255, 255))
     board.render_level()
     bullet_group = pygame.sprite.Group()
+
+    bullets_group = pygame.sprite.Group()
     while running:
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 running = False
             if event.type == pygame.MOUSEBUTTONDOWN:
-                shooting = Bullet(bullet_group, character.rect, event.pos, screen, event)
+                shooting = Bullet(bullet_group, character_group, character.rect, event.pos, screen, event)
             if event.type == pygame.KEYDOWN:
                 flags[event.key] = True
                 smome = True
@@ -152,10 +171,12 @@ if __name__ == '__main__':
         move()
         board.three_on_four([character.rect.x, character.rect.y])
         character_group.draw(screen)
-        try:
-            shooting.update()
-        except Exception:
-            pass
+        # try:
+        #     shooting.update()
+        # except Exception:
+        #     pass
+        character_group.update(0)
+        # bullet_group.draw(screen)
         board.on_line([character.rect.x, character.rect.y])
         pygame.display.flip()
     pygame.quit()
