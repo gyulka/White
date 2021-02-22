@@ -12,8 +12,8 @@ class Board:
         self.width = width
         self.height = height
         self.board = [[0] * width for _ in range(height)]
-        self.board[0] = [1] * width
-        self.board[-1] = [1] * width
+        self.board[0] = [2] * width
+        self.board[-1] = [2] * width
         for i in range(height):
             if height - 1 > i > 0:
                 self.board[i][0] = 2
@@ -109,7 +109,7 @@ blue color-boxes''')
     app = QApplication([])
     wid = Mywidget()
 
-    size = (1300, 800)
+    size = (1280, 720)
     board = Board(consts.b, consts.a)
     screen = pygame.display.set_mode(size)
     board.set_view(screen, 5, 5, 40)
