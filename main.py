@@ -1,9 +1,7 @@
 import math
 import os
 import random
-
 import pygame
-
 import consts
 
 box1 = pygame.image.load('data/textures/object/box1.png')
@@ -189,7 +187,7 @@ class Person(pygame.sprite.Sprite):
         for elem in x:
             if elem is not None:
                 elem = elem[::-1]
-                collide_list = pygame.sprite.spritecollide(self, box_spites, False)
+                collide_list = pygame.sprite.spritecollide(dno_person, dno_sprite, False)
                 if collide_list:
                     return collide_list
                 return False
@@ -201,13 +199,16 @@ class Person(pygame.sprite.Sprite):
                     self.image = self.puctures1[i[0]]
         if any(self.kak):
             self.rect.x += self.kak[0]
+            dno_person.update(self.rect.x, self.rect.y)
             collide = self.going()
             if collide:
                 self.rect.x -= self.kak[0]
             self.rect.y += self.kak[1]
+            dno_person.update(self.rect.x, self.rect.y)
             collide = self.going()
             if collide:
                 self.rect.y -= self.kak[1]
+            dno_person.update(self.rect.x, self.rect.y)
 
                 # if elem.rect.x == self.rect.x + 40 or elem.rect.x + 40 == self.rect.x:
                 #     self.kak[0] = 0
@@ -217,6 +218,19 @@ class Person(pygame.sprite.Sprite):
                 #     self.kak[1] = 0
                 # else:
                 #     self.rect.y += self.kak[1]
+
+class Dno_Pers(pygame.sprite.Sprite):
+    def __init__(self, group):
+        super().__init__(group)
+        self.image = pygame.Surface((38, 1))
+        self.rect = self.image.get_rect()
+        self.rect.x = 620
+        self.rect.y = 320
+        self.pos = self.rect
+
+    def update(self, x, y):
+        self.rect.x = x
+        self.rect.y = y + 79
 
 
 class Box(pygame.sprite.Sprite):
@@ -232,6 +246,20 @@ class Box(pygame.sprite.Sprite):
         self.rect.height = 40
         self.rect.x = int(pos[1]) * 40
         self.rect.y = int(pos[0]) * 40 - 79
+        self.pos = self.rect
+        self.dop = 10
+
+class Dno(pygame.sprite.Sprite):
+    def __init__(self, group, pos):
+        super().__init__(group)
+        self.image = pygame.Surface((40, 40))
+        self.rect = self.image.get_rect()
+        self.rect.w = 40
+        self.rect.h = 40
+        self.rect.width = 40
+        self.rect.height = 40
+        self.rect.x = int(pos[1]) * 40
+        self.rect.y = int(pos[0]) * 40
         self.pos = self.rect
         self.dop = 10
 
@@ -312,8 +340,9 @@ if __name__ == '__main__':
     splash = True  # заставка, ждем начала d.display.flip()
     all_sprites = YAwareGroup()
     character_group = pygame.sprite.Group()
-    box_spites = pygame.sprite.Group()
+    dno_pers = pygame.sprite.Group()
     dno_sprite = pygame.sprite.Group()
+    box_spites = pygame.sprite.Group()
     bullet_group = pygame.sprite.Group()
 
     # img_character = load_image('Mandalorian.png')
@@ -338,8 +367,10 @@ if __name__ == '__main__':
     for i in range(len(txt_level)):
         box = txt_level[i].split()[:2]
         boxes.update({','.join(box): Box(box_spites, all_sprites, txt_level[i].split())})
+        dno = Dno(dno_sprite, txt_level[i].split())
     print(boxes)
     person = Person(all_sprites, character_group)
+    dno_person = Dno_Pers(dno_pers)
     # board.render_level()
     while running:
         for event in pygame.event.get():
@@ -357,6 +388,7 @@ if __name__ == '__main__':
         # move()
         board.three_on_four([person.rect.x, person.rect.y])
         character_group.draw(screen)
+        character_group.update(0)
         # bullet_group.update(0)
         bullet_group.draw(screen)
         all_sprites.draw(screen)
@@ -364,7 +396,6 @@ if __name__ == '__main__':
         #     shooting.update()
         # except Exception:
         #     pass
-        character_group.update(0)
         # bullet_group.draw(screen)
         # board.on_line([character.rect.x, character.rect.y])
         pygame.display.flip()
