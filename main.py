@@ -16,7 +16,7 @@ image = {'box1': box1, 'box2': box2, 'box3': box3, 'box4': box4, 'golv': golv, '
          'wol': wol}
 
 
-class YAwareGroup(pygame.sprite.Group):
+class YAwareGroup(pygame.sprite.Group):  # сортировка обектов для отрисовки сверху вниз
     def by_y(self, spr):
         return spr.pos.y + spr.dop
 
@@ -28,7 +28,7 @@ class YAwareGroup(pygame.sprite.Group):
         self.lostsprites = []
 
 
-class Board:
+class Board:  # класс пола
     def __init__(self, screen, width, size):
         self.screen = screen
         self.width = consts.b
@@ -40,13 +40,12 @@ class Board:
             for j in enumerate(i[1]):
                 self.screen.blit(image[j[1]], (i[0] * 40, j[0] * 40))
 
-    def three_on_four(self, cord):
+    def three_on_four(self, cord):  # отрисовка ближних обектов (4*4 вокруг персанажа
         x, y = cord[0] // 40, cord[1] // 40
         self.all_sector = [[x - 1, y], [x, y], [x + 1, y], [x + 2, y],
                            [x, y + 1], [x + 1, y + 1], [x + 2, y + 1], [x - 1, y + 1],
                            [x, y - 1], [x + 1, y - 1], [x + 2, y - 1], [x - 1, y - 1],
                            [x, y + 2], [x + 1, y + 2], [x + 2, y + 2], [x - 1, y + 2]]
-        # print(self.all_sector)
         for i in range(16):
             try:
                 self.screen.blit(image[self.pole[self.all_sector[i][0]][self.all_sector[i][1]]],
@@ -54,15 +53,15 @@ class Board:
             except Exception:
                 pass
 
-    def get_boxes_in_sector(self, level):
-        flag = [None] * 16
-        for elem in enumerate(self.all_sector):
+    def get_boxes_in_sector(self, level, sector):  # ывдает список коробок в секторе
+        flag = [None] * len(sector)
+        for elem in enumerate(sector):
             if f'{elem[1][1]} {elem[1][0]} box' in level:
                 flag[elem[0]] = elem[1]
         return flag
 
 
-class Bullet(pygame.sprite.Sprite):
+class Bullet(pygame.sprite.Sprite):  # класс пули
     def __init__(self, group, bullets, otkuda, kuda, sc, event, otraj=3):
         super().__init__(group)
         self.otkuda = otkuda
@@ -74,11 +73,9 @@ class Bullet(pygame.sprite.Sprite):
         self.otraj = otraj
         self.kolvo_otraj = -1
         self.size_bullet = 8
-        #  возможно будет двигатся лишь на положительную сторону
-        #  по оси у(тогда надо попробовать или иф или арксинус и теорему пифагора
-        #  куда(?) нужно менять координату для каждого кадра
         self.alfa = math.atan(
-            (self.kuda[0] - self.otkuda[0]) / (self.kuda[1] - self.otkuda[1]))  # нашли направление вектора(градус)
+            (self.kuda[0] - self.otkuda[0]) / (self.kuda[1] - self.otkuda[1]))  # нашли направление в градусной мере
+        # направление пули в векторной мере(как изменятьпо х и у
         self.moving = [
             -self.velocity * math.sin(self.alfa) * (self.otkuda[1] - self.kuda[1]) // abs(
                 self.otkuda[1] - self.kuda[1]),
@@ -90,26 +87,35 @@ class Bullet(pygame.sprite.Sprite):
         self.rect.y = otkuda[1]
         self.update(event)
 
-    def update(self, *args):
+    def going(self):  # проверка на возможность движения
+        x = board.get_boxes_in_sector(txt_level, self.all_sector)
+        for elem in x:
+            if elem is not None:
+                elem = elem[::-1]
+                collide_list = pygame.sprite.spritecollide(self, dno_sprite, False)
+                if collide_list:
+                    return collide_list
+                return False
+
+    def update(self, *args):  # изменение положения пули
         self.three_on_tree(self.rect)
-        if self.rect[0] + self.moving[0] <= 0:
-            self.kolvo_otraj += 1
-            self.moving[0] = - self.moving[0]
-        if self.rect[0] + self.moving[0] >= 1280:
-            self.kolvo_otraj += 1
-            self.moving[0] = - self.moving[1]
-        if self.rect[1] + self.moving[1] <= 0:
-            self.kolvo_otraj += 1
-            self.moving[1] = - self.moving[1]
-        if self.rect[1] + self.moving[1] >= 720:
-            self.kolvo_otraj += 1
-            self.moving[1] = - self.moving[1]
+        if any(self.moving):
+            collide = self.going()
+            if collide:
+                self.kolvo_otraj += 1
+                self.moving[0] = -self.moving[0]
+            self.rect = self.rect.move(*self.moving)
+            collide = self.going()
+            if collide:
+                self.kolvo_otraj += 1
+                self.moving[1] = -self.moving[1]
+                self.moving[0] = -self.moving[0]
         if self.kolvo_otraj >= self.otraj:
             self.kill()
         self.pos = self.rect
         self.rect = self.rect.move(*self.moving)
 
-    def three_on_tree(self, cord):
+    def three_on_tree(self, cord):  # обновление поля вокруг пули (сектор 3*3)
         x, y = cord[0] // 40, cord[1] // 40
         self.all_sector = [[x - 1, y], [x, y], [x + 1, y],
                            [x, y + 1], [x + 1, y + 1], [x - 1, y + 1],
@@ -125,7 +131,7 @@ class Bullet(pygame.sprite.Sprite):
         return False
 
 
-class Person(pygame.sprite.Sprite):
+class Person(pygame.sprite.Sprite):  # класс игрока
     mandalorian_up1 = pygame.image.load('data/textures/main_charachter_1/Mandalorian_back_move1.png')
     mandalorian_up2 = pygame.image.load('data/textures/main_charachter_1/Mandalorian_back_move2.png')
     mandalorian_down1 = pygame.image.load('data/textures/main_charachter_1/Mandalorian_move1.png')
@@ -139,6 +145,7 @@ class Person(pygame.sprite.Sprite):
         super().__init__(group)
         self.add(person)
         self.dop = 10
+        # изменение картинки
         self.check_pictures = [0, 0, 0, 0]
         self.change_pictures = [0, 0, 0, 0]
         self.puctures1 = [Person.mandalorian_left1, Person.mandalorian_up1,
@@ -152,7 +159,7 @@ class Person(pygame.sprite.Sprite):
         self.kak = [0, 0]  # как менять координату перса
         self.pos = self.rect
 
-    def move(self, event):
+    def move(self, event):  # кнопку нажали
         if event == 119:  # w
             self.kak[1] = - 2
             self.check_pictures[1] = 1
@@ -165,10 +172,8 @@ class Person(pygame.sprite.Sprite):
         if event == 100:  # d
             self.kak[0] = 2
             self.check_pictures[2] = 1
-        # if event == 101:
-        #     print('инвентраь, я верю в него')
 
-    def down(self, event):
+    def down(self, event):  # кнопку отжали
         if event == 119:  # w
             self.kak[1] = 0
             self.check_pictures[1] = 0
@@ -182,8 +187,8 @@ class Person(pygame.sprite.Sprite):
             self.kak[0] = 0
             self.check_pictures[2] = 0
 
-    def going(self):
-        x = board.get_boxes_in_sector(txt_level)
+    def going(self):  # проверка на возможность движения
+        x = board.get_boxes_in_sector(txt_level, board.all_sector)
         for elem in x:
             if elem is not None:
                 elem = elem[::-1]
@@ -192,8 +197,8 @@ class Person(pygame.sprite.Sprite):
                     return collide_list
                 return False
 
-    def update(self, *args):
-        for i in enumerate(self.check_pictures):
+    def update(self, *args):  # отрисовка перса
+        for i in enumerate(self.check_pictures):  # обновление картинки
             if i[1]:
                 if self.change_pictures[i[0]] == 40:
                     self.image = self.puctures1[i[0]]
@@ -210,16 +215,8 @@ class Person(pygame.sprite.Sprite):
                 self.rect.y -= self.kak[1]
             dno_person.update(self.rect.x, self.rect.y)
 
-                # if elem.rect.x == self.rect.x + 40 or elem.rect.x + 40 == self.rect.x:
-                #     self.kak[0] = 0
-                # else:
-                #     self.rect.x += self.kak[0]
-                # if elem.rect.y == self.rect.y + 40 or elem.rect.y == self.rect.y + 40:
-                #     self.kak[1] = 0
-                # else:
-                #     self.rect.y += self.kak[1]
 
-class Dno_Pers(pygame.sprite.Sprite):
+class Dno_Pers(pygame.sprite.Sprite):  # класс колайд-хитбокса
     def __init__(self, group):
         super().__init__(group)
         self.image = pygame.Surface((38, 1))
@@ -233,11 +230,10 @@ class Dno_Pers(pygame.sprite.Sprite):
         self.rect.y = y + 79
 
 
-class Box(pygame.sprite.Sprite):
+class Box(pygame.sprite.Sprite):  # класс обектов
     def __init__(self, obj, group, pos):
         super().__init__(group)
         self.add(obj)
-        # self.image = pygame.Surface((40, 40))
         self.image = image[random.choice(['box1', 'box2', 'box3', 'box4'])]
         self.rect = self.image.get_rect()
         self.rect.w = 40
@@ -249,7 +245,8 @@ class Box(pygame.sprite.Sprite):
         self.pos = self.rect
         self.dop = 10
 
-class Dno(pygame.sprite.Sprite):
+
+class Dno(pygame.sprite.Sprite):  # класс хитбоксов обектов
     def __init__(self, group, pos):
         super().__init__(group)
         self.image = pygame.Surface((40, 40))
@@ -262,82 +259,47 @@ class Dno(pygame.sprite.Sprite):
         self.rect.y = int(pos[0]) * 40
         self.pos = self.rect
         self.dop = 10
-
-
-def load_image(name, color_key=None):  # Эта функция знакома всем до боли
-    fullname = os.path.join(r'data\textures\main_charachter_1', name)
-    try:
-        image = pygame.image.load(fullname)
-    except pygame.error as message:
-        print('Cannot load image:', name)
-        raise SystemExit(message)
-
-    if color_key is not None:
-        if color_key == -1:
-            color_key = image.get_at((0, 0))
-        image.set_colorkey(color_key)
-    else:
-        image = image.convert_alpha()
-    return image
-
-
-# def move():
-#     global wait, pos, stap, character, character_group
-#     for i in flags:
-#         wait += 1
-#         if flags[i]:
-#             check_and_break = False
-#             if i == pygame.K_w:
-#                 if character.rect.y - sp >= 1:
-#                     character.rect.y -= sp
-#                     character.image = load_image('Mandalorian_back_move1.png')
-#                     check_and_break = True
-#             if i == pygame.K_a:
-#                 if character.rect.x - sp >= 1:
-#                     character.rect.x -= sp
-#                     character.image = load_image('Mandalorian_left_move1.png')
-#                     check_and_break = True
-#             if i == pygame.K_s:
-#                 if character.rect.y < size[1] - size_character[1]:
-#                     character.rect.y += sp
-#                     character.image = load_image('Mandalorian_move1.png')
-#                     check_and_break = True
-#             if i == pygame.K_d:
-#                 if character.rect.x <= size[0] - size_character[0]:
-#                     character.rect.x += sp
-#                     character.image = load_image('Mandalorian_right_move1.png')
-#                     check_and_break = True
 #
-#         x = board.get_boxes_in_sector(txt_level)
-#         for elem in x:
-#             if elem is not None:
-#                 print(elem, boxes[','.join([str(i) for i in elem])])
-#                 print(character.rect, boxes[','.join([str(i) for i in elem])].rect)
-#                 if pygame.sprite.collide_mask(character, boxes[','.join([str(i) for i in elem])]):
-#                     character.rect.x = 0
+#
+# def load_image(name, color_key=None):  # Эта функция знакома всем до боли
+#     fullname = os.path.join(r'data\textures\main_charachter_1', name)
+#     try:
+#         image = pygame.image.load(fullname)
+#     except pygame.error as message:
+#         print('Cannot load image:', name)
+#         raise SystemExit(message)
+#
+#     if color_key is not None:
+#         if color_key == -1:
+#             color_key = image.get_at((0, 0))
+#         image.set_colorkey(color_key)
+#     else:
+#         image = image.convert_alpha()
+#     return image
 
 
 if __name__ == '__main__':
-    #  ------------------------------------------- Придвижу, что эта инфа никому не интересна
     pygame.init()
-    shoot_coord = list()
     size = (1280, 720)
     screen = pygame.display.set_mode(size)
     screen.fill((0, 0, 0))
-    size_character = (40, 80)
-    pos = (size[0] // 2 - size_character[0] // 2, size[1] // 2 - size_character[1] // 2)
     running = True
-    flags = {}
-    stap = 0
-    s = ''
-    wait = 0
-    sp = 2
-    smome = False
     #  ------------------------------------------- изображения...
     logo = pygame.image.load('data/textures/Logo/logo3.png')
     #  -------------------------------------------
     screen.blit(logo, (0, 0))
-    splash = True  # заставка, ждем начала d.display.flip()
+    splash = True  # заставка, ждем начала игры
+    while splash:
+        for event in pygame.event.get():
+            if event.type == pygame.QUIT:
+                running = False
+                splash = False
+            if event.type == pygame.MOUSEBUTTONDOWN:
+                splash = False
+            if event.type == pygame.KEYDOWN:
+                splash = False
+        pygame.display.flip()
+
     all_sprites = YAwareGroup()
     character_group = pygame.sprite.Group()
     dno_pers = pygame.sprite.Group()
@@ -345,19 +307,6 @@ if __name__ == '__main__':
     box_spites = pygame.sprite.Group()
     bullet_group = pygame.sprite.Group()
 
-    # img_character = load_image('Mandalorian.png')
-    # character = pygame.sprite.Sprite(character_group)
-    # character.image = img_character
-    # character.rect = character.image.get_rect()
-    # character.rect.x = 620
-    # character.rect.y = 320
-    # character.add(all_sprites)
-    # character.pos = character.rect
-    # character.dop = 10
-    # character.mask = pygame.mask.Mask(size=(40, 40), fill=True)
-
-    # board.render_pole()
-    # board.lvl('test_level.txt')
     screen.fill((255, 255, 255))
     board = Board(screen, 1280, 720)
 
@@ -368,10 +317,8 @@ if __name__ == '__main__':
         box = txt_level[i].split()[:2]
         boxes.update({','.join(box): Box(box_spites, all_sprites, txt_level[i].split())})
         dno = Dno(dno_sprite, txt_level[i].split())
-    print(boxes)
     person = Person(all_sprites, character_group)
     dno_person = Dno_Pers(dno_pers)
-    # board.render_level()
     while running:
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
@@ -379,24 +326,14 @@ if __name__ == '__main__':
             if event.type == pygame.MOUSEBUTTONDOWN:
                 shooting = Bullet(bullet_group, character_group, person.rect, event.pos, screen, event)
             if event.type == pygame.KEYDOWN:
-                flags[event.key] = True
                 person.move(event.key)
-                smome = True
             if event.type == pygame.KEYUP:
-                flags[event.key] = False
                 person.down(event.key)
-        # move()
         board.three_on_four([person.rect.x, person.rect.y])
         character_group.draw(screen)
         character_group.update(0)
-        # bullet_group.update(0)
+        bullet_group.update(0)
         bullet_group.draw(screen)
         all_sprites.draw(screen)
-        # try:
-        #     shooting.update()
-        # except Exception:
-        #     pass
-        # bullet_group.draw(screen)
-        # board.on_line([character.rect.x, character.rect.y])
         pygame.display.flip()
     pygame.quit()
