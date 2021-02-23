@@ -59,7 +59,7 @@ class Board:  # класс пола
     def get_boxes_in_sector(self, level, sector):  # выдает список коробок в секторе
         flag = [None] * len(sector)
         for elem in enumerate(sector):
-            if f'{elem[1][1]} {elem[1][0]} box' in level:
+            if f'{elem[1][1]} {elem[1][0]} box' in level or f'{elem[1][1]} {elem[1][0]} wall' in level:
                 flag[elem[0]] = elem[1]
         return flag
 
@@ -81,18 +81,22 @@ class Bullet(pygame.sprite.Sprite):  # класс пули
         self.otraj = otraj
         self.kolvo_otraj = -1
         self.size_bullet = 8
-        self.alfa = math.atan(
-            (self.kuda[0] - self.otkuda[0]) / (self.kuda[1] - self.otkuda[1]))  # нашли направление в градусной мере
+        try:
+            self.alfa = math.atan(
+                (self.kuda[0] - self.otkuda[0]) / (self.kuda[1] - self.otkuda[1]))  # нашли направление в градусной мере
+            self.moving = [
+                -self.velocity * math.sin(self.alfa) * (self.otkuda[1] - self.kuda[1]) // abs(
+                    self.otkuda[1] - self.kuda[1]),
+                -self.velocity * math.cos(self.alfa) * (self.otkuda[1] - self.kuda[1]) // abs(
+                    self.otkuda[1] - self.kuda[1])]
+        except Exception:
+            self.moving = [-10, 0]
         # направление пули в векторной мере(как изменятьпо х и у
-        self.moving = [
-            -self.velocity * math.sin(self.alfa) * (self.otkuda[1] - self.kuda[1]) // abs(
-                self.otkuda[1] - self.kuda[1]),
-            -self.velocity * math.cos(self.alfa) * (self.otkuda[1] - self.kuda[1]) // abs(
-                self.otkuda[1] - self.kuda[1])]
+
         self.image = pygame.image.load('data/textures/mini_object/shoot1.png')
         self.rect = self.image.get_rect()
-        self.rect.x = otkuda[0]
-        self.rect.y = otkuda[1]
+        self.rect.x = otkuda[0] + 16
+        self.rect.y = otkuda[1] + 38
         self.update(event)
 
     def going(self):  # проверка на возможность движения
@@ -249,6 +253,22 @@ class Dno_Pers(pygame.sprite.Sprite):  # класс колайд-хитбокс�
         self.rect.y = y + 79
 
 
+class Wall(pygame.sprite.Sprite):  # класс обектов
+    def __init__(self, obj, group, pos):
+        super().__init__(group)
+        self.add(obj)
+        self.image = image['wol']
+        self.rect = self.image.get_rect()
+        self.rect.w = 40
+        self.rect.h = 40
+        self.rect.width = 40
+        self.rect.height = 40
+        self.rect.x = int(pos[1]) * 40
+        self.rect.y = int(pos[0]) * 40 - 79
+        self.pos = self.rect
+        self.dop = 10
+
+
 class Box(pygame.sprite.Sprite):  # класс обектов
     def __init__(self, obj, group, pos):
         super().__init__(group)
@@ -266,7 +286,7 @@ class Box(pygame.sprite.Sprite):  # класс обектов
 
 
 class Dno(pygame.sprite.Sprite):  # класс хитбоксов обектов
-    def __init__(self, group, pos):
+    def __init__(self, group, pos, dop=0):
         super().__init__(group)
         self.image = pygame.Surface((40, 40))
         self.rect = self.image.get_rect()
@@ -275,7 +295,7 @@ class Dno(pygame.sprite.Sprite):  # класс хитбоксов обектов
         self.rect.width = 40
         self.rect.height = 40
         self.rect.x = int(pos[1]) * 40
-        self.rect.y = int(pos[0]) * 40
+        self.rect.y = int(pos[0]) * 40 + dop
         self.pos = self.rect
         self.dop = 10
 
@@ -309,6 +329,7 @@ def init_room(stroka='files/levels/0_2_1.txt', coords=[1280 // 2, 720 // 2]):
     dno_pers = pygame.sprite.Group()
     dno_sprite = pygame.sprite.Group()
     box_spites = pygame.sprite.Group()
+    wol_sprites = pygame.sprite.Group()
     bullet_group = pygame.sprite.Group()
 
     level = stroka
@@ -316,12 +337,16 @@ def init_room(stroka='files/levels/0_2_1.txt', coords=[1280 // 2, 720 // 2]):
 
     boxes = dict()
     for i in range(len(txt_level)):
-        box = txt_level[i].split()[:2]
-        boxes.update({','.join(box): Box(box_spites, all_sprites, txt_level[i].split())})
-        dno = Dno(dno_sprite, txt_level[i].split())
+        if txt_level[i].split()[2] == 'box':
+            box = txt_level[i].split()[:2]
+            boxes.update({','.join(box): Box(box_spites, all_sprites, txt_level[i].split())})
+            dno = Dno(dno_sprite, txt_level[i].split())
+        else:
+            wol = Wall(wol_sprites, all_sprites, txt_level[i].split())
+            dno = Dno(dno_sprite, txt_level[i].split())
     person = Person(all_sprites, character_group)
     dno_person = Dno_Pers(dno_pers)
-    person.rect.x,person.rect.y=coords
+    person.rect.x, person.rect.y = coords
 
 
 if __name__ == '__main__':
@@ -369,16 +394,16 @@ if __name__ == '__main__':
         if ans is not None:
             if ans == UP:
                 li -= 1
-                coord = [1280 // 2, 640]
+                coord = [person.rect.x, 640]
             elif ans == RIGHT:
                 lj += 1
-                coord = [40, 720 // 2]
+                coord = [0, person.rect.y]
             elif ans == DOWN:
                 li += 1
-                coord = [1280 // 2, 40]
+                coord = [person.rect.x, 40]
             elif ans == LEFT:
                 lj -= 1
-                coord = [1240, 720 // 2]
+                coord = [1240, person.rect.y]
 
             level = map_list[li][lj]
             init_room(level, coord)
@@ -388,7 +413,7 @@ if __name__ == '__main__':
         character_group.draw(screen)
         character_group.update(0)
         bullet_group.update(0)
-        bullet_group.draw(screen)
         all_sprites.draw(screen)
+        bullet_group.draw(screen)
         pygame.display.flip()
     pygame.quit()
