@@ -17,9 +17,9 @@ def gen_map():
     ans = ''
     while i != a or j != 2:
         if i == b:
-            ans += DOWN if j > 2 else UP
+            ans += UP if j > 2 else DOWN
             lis[j][i] = gen_room(from1, ans[-1])
-            from1 = UP if j > 2 else DOWN
+            from1 = DOWN if j > 2 else UP
         elif j == a:
             ans += RIGHT
             lis[j][i] = gen_room(from1, ans[-1])
@@ -41,9 +41,9 @@ def gen_map():
         if from1 == LEFT:
             i += 1
         elif from1 == UP:
-            j -= 1
-        elif from1 == DOWN:
             j += 1
+        elif from1 == DOWN:
+            j -= 1
     return lis, ans
 
 def gen_room(from1, to1):
