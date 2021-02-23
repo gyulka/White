@@ -53,7 +53,7 @@ class Board:  # класс пола
             except Exception:
                 pass
 
-    def get_boxes_in_sector(self, level, sector):  # ывдает список коробок в секторе
+    def get_boxes_in_sector(self, level, sector):  # выдает список коробок в секторе
         flag = [None] * len(sector)
         for elem in enumerate(sector):
             if f'{elem[1][1]} {elem[1][0]} box' in level:
@@ -197,6 +197,11 @@ class Person(pygame.sprite.Sprite):  # класс игрока
                     return collide_list
                 return False
 
+    def check_out(self):
+        if (0 >= self.rect.x >= 1280) and (0 >= self.rect.y >= 720):
+            return True
+        return False
+
     def update(self, *args):  # отрисовка перса
         for i in enumerate(self.check_pictures):  # обновление картинки
             if i[1]:
@@ -260,6 +265,8 @@ class Dno(pygame.sprite.Sprite):  # класс хитбоксов обектов
         self.pos = self.rect
         self.dop = 10
 #
+
+
 #
 # def load_image(name, color_key=None):  # Эта функция знакома всем до боли
 #     fullname = os.path.join(r'data\textures\main_charachter_1', name)
@@ -310,8 +317,10 @@ if __name__ == '__main__':
     screen.fill((255, 255, 255))
     board = Board(screen, 1280, 720)
 
-    level = 'files/levels/1_2_1.txt'
+    li, lj = 4, 3
+    level = f'files/levels/{li}_{lj}_1.txt'
     txt_level = (open(level).read()).split(';')
+
     boxes = dict()
     for i in range(len(txt_level)):
         box = txt_level[i].split()[:2]
@@ -329,6 +338,8 @@ if __name__ == '__main__':
                 person.move(event.key)
             if event.type == pygame.KEYUP:
                 person.down(event.key)
+        if person.check_out():
+            print('next lvl')
         board.three_on_four([person.rect.x, person.rect.y])
         character_group.draw(screen)
         character_group.update(0)

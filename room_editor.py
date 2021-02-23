@@ -12,7 +12,7 @@ class Board:
         self.width = width
         self.height = height
         self.board = [[0] * width for _ in range(height)]
-        self.board[0] = [2] * width
+        self.board[0] = [1] * width
         self.board[-1] = [2] * width
         for i in range(height):
             if height - 1 > i > 0:
