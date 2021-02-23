@@ -1,8 +1,11 @@
 import math
-import os
 import random
+
 import pygame
+
 import consts
+import generation
+from generation import LEFT, RIGHT, UP, DOWN
 
 box1 = pygame.image.load('data/textures/object/box1.png')
 box2 = pygame.image.load('data/textures/object/box2.png')
@@ -59,6 +62,11 @@ class Board:  # класс пола
             if f'{elem[1][1]} {elem[1][0]} box' in level:
                 flag[elem[0]] = elem[1]
         return flag
+
+    def render(self):
+        for i in enumerate(self.pole):
+            for j in enumerate(i[1]):
+                self.screen.blit(image[j[1]], (i[0] * 40, j[0] * 40))
 
 
 class Bullet(pygame.sprite.Sprite):  # класс пули
@@ -198,9 +206,15 @@ class Person(pygame.sprite.Sprite):  # класс игрока
                 return False
 
     def check_out(self):
-        if (0 >= self.rect.x >= 1280) and (0 >= self.rect.y >= 720):
-            return True
-        return False
+        if self.rect.x <= -40:
+            return LEFT
+        if self.rect.x + self.rect.w >= 1280+40:
+            return RIGHT
+        if self.rect.y <= -50:
+            return UP
+        if self.rect.y + self.rect.h >= 770:
+            return DOWN
+        return None
 
     def update(self, *args):  # отрисовка перса
         for i in enumerate(self.check_pictures):  # обновление картинки
@@ -264,6 +278,8 @@ class Dno(pygame.sprite.Sprite):  # класс хитбоксов обектов
         self.rect.y = int(pos[0]) * 40
         self.pos = self.rect
         self.dop = 10
+
+
 #
 
 
@@ -283,6 +299,29 @@ class Dno(pygame.sprite.Sprite):  # класс хитбоксов обектов
 #     else:
 #         image = image.convert_alpha()
 #     return image
+
+
+def init_room(stroka='files/levels/0_2_1.txt', coords=[1280 // 2, 720 // 2]):
+    global all_sprites, character_group, dno_pers, dno_sprite, box_spites, bullet_group, level, txt_level, boxes, person, dno_person
+    all_sprites = YAwareGroup()
+
+    character_group = pygame.sprite.Group()
+    dno_pers = pygame.sprite.Group()
+    dno_sprite = pygame.sprite.Group()
+    box_spites = pygame.sprite.Group()
+    bullet_group = pygame.sprite.Group()
+
+    level = stroka
+    txt_level = (open(level).read()).split(';')
+
+    boxes = dict()
+    for i in range(len(txt_level)):
+        box = txt_level[i].split()[:2]
+        boxes.update({','.join(box): Box(box_spites, all_sprites, txt_level[i].split())})
+        dno = Dno(dno_sprite, txt_level[i].split())
+    person = Person(all_sprites, character_group)
+    dno_person = Dno_Pers(dno_pers)
+    person.rect.x,person.rect.y=coords
 
 
 if __name__ == '__main__':
@@ -307,27 +346,15 @@ if __name__ == '__main__':
                 splash = False
         pygame.display.flip()
 
-    all_sprites = YAwareGroup()
-    character_group = pygame.sprite.Group()
-    dno_pers = pygame.sprite.Group()
-    dno_sprite = pygame.sprite.Group()
-    box_spites = pygame.sprite.Group()
-    bullet_group = pygame.sprite.Group()
-
     screen.fill((255, 255, 255))
     board = Board(screen, 1280, 720)
 
-    li, lj = 4, 3
-    level = f'files/levels/{li}_{lj}_1.txt'
-    txt_level = (open(level).read()).split(';')
+    li, lj = 2, 0
+    map_list, map_str = generation.gen_map()
+    print(*map_list, sep='\n')
 
-    boxes = dict()
-    for i in range(len(txt_level)):
-        box = txt_level[i].split()[:2]
-        boxes.update({','.join(box): Box(box_spites, all_sprites, txt_level[i].split())})
-        dno = Dno(dno_sprite, txt_level[i].split())
-    person = Person(all_sprites, character_group)
-    dno_person = Dno_Pers(dno_pers)
+    init_room(map_list[li][lj])
+
     while running:
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
@@ -338,8 +365,25 @@ if __name__ == '__main__':
                 person.move(event.key)
             if event.type == pygame.KEYUP:
                 person.down(event.key)
-        if person.check_out():
-            print('next lvl')
+        ans = person.check_out()
+        if ans is not None:
+            if ans == UP:
+                li -= 1
+                coord = [1280 // 2, 640]
+            elif ans == RIGHT:
+                lj += 1
+                coord = [40, 720 // 2]
+            elif ans == DOWN:
+                li += 1
+                coord = [1280 // 2, 40]
+            elif ans == LEFT:
+                lj -= 1
+                coord = [1240, 720 // 2]
+
+            level = map_list[li][lj]
+            init_room(level, coord)
+            board.render()
+
         board.three_on_four([person.rect.x, person.rect.y])
         character_group.draw(screen)
         character_group.update(0)

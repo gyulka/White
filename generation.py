@@ -6,11 +6,11 @@ LEFT = '4'
 UP = '1'
 DOWN = '3'
 
-
 def gen_map():
     a = 5
     b = 5
-    lis = []
+    lis = [[None for i in range(b + 1)] for i in range(a + 1)]
+    lis[a // 2][0] = gen_start()
     i = 1
     j = 2
     from1 = LEFT
@@ -18,24 +18,24 @@ def gen_map():
     while i != a or j != 2:
         if i == b:
             ans += DOWN if j > 2 else UP
-            lis.append( gen_room(from1, ans[-1]))
+            lis[j][i] = gen_room(from1, ans[-1])
             from1 = UP if j > 2 else DOWN
         elif j == a:
             ans += RIGHT
-            lis.append( gen_room(from1, ans[-1]))
+            lis[j][i] = gen_room(from1, ans[-1])
             from1 = LEFT
         elif j == 0:
             ans += RIGHT
-            lis.append( gen_room(from1, ans[-1]))
+            lis[j][i] = gen_room(from1, ans[-1])
             from1 = LEFT
         elif i == b:
             ans += DOWN if j > 2 else UP
-            lis.append( gen_room(from1, ans[-1]))
+            lis[j][i] = gen_room(from1, ans[-1])
             from1 = UP if j > 2 else DOWN
         else:
             choises = [k for k in [UP, RIGHT, DOWN] if k != from1]
             ans += random.choice(choises)
-            lis.append( gen_room(from1, ans[-1]))
+            lis[j][i] = gen_room(from1, ans[-1])
             from1 = {RIGHT: LEFT, UP: DOWN, LEFT: RIGHT, DOWN: UP}[ans[-1]]
 
         if from1 == LEFT:
@@ -47,11 +47,10 @@ def gen_map():
     return lis, ans
 
 def gen_room(from1, to1):
-    return f'files/levels/{from1}_{to1}_{random.randint(1, 2)}.txt'
+    if (from1 == '3' and to1=='1') or (from1 == '1' and to1=='3'):
+        return f'files/levels/{3}_{1}_{1}.txt'
+    return f'files/levels/{from1}_{to1}_{1}.txt'
 
 
 def gen_start():
-    return f'files/levels/start/start_{random.randint(1, 2)}.txt'
-
-
-print(gen_map())
+    return f'files/levels/0_{2}_1.txt'
