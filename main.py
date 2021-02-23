@@ -1,8 +1,11 @@
-import pygame
-import os
 import math
-import consts
+import os
 import random
+
+import pygame
+
+import consts
+
 box1 = pygame.image.load('data/textures/object/box1.png')
 box2 = pygame.image.load('data/textures/object/box2.png')
 box3 = pygame.image.load('data/textures/object/box3.png')
@@ -11,7 +14,8 @@ golv = pygame.image.load('data/textures/object/golv.png')
 golv2 = pygame.image.load('data/textures/object/golv2.png')
 golv3 = pygame.image.load('data/textures/object/golv3.png')
 wol = pygame.image.load('data/textures/object/wol.png')
-image = {'box1': box1, 'box2': box2, 'box3': box3, 'box4': box4, 'golv': golv, 'golv2': golv2, 'golv3': golv3, 'wol': wol}
+image = {'box1': box1, 'box2': box2, 'box3': box3, 'box4': box4, 'golv': golv, 'golv2': golv2, 'golv3': golv3,
+         'wol': wol}
 
 
 class YAwareGroup(pygame.sprite.Group):
@@ -41,14 +45,14 @@ class Board:
     def three_on_four(self, cord):
         x, y = cord[0] // 40, cord[1] // 40
         self.all_sector = [[x - 1, y], [x, y], [x + 1, y], [x + 2, y],
-                      [x, y + 1], [x + 1, y + 1], [x + 2, y + 1], [x - 1, y + 1],
-                      [x, y - 1], [x + 1, y - 1], [x + 2, y - 1], [x - 1, y - 1],
-                      [x, y + 2], [x + 1, y + 2], [x + 2, y + 2], [x - 1, y + 2]]
+                           [x, y + 1], [x + 1, y + 1], [x + 2, y + 1], [x - 1, y + 1],
+                           [x, y - 1], [x + 1, y - 1], [x + 2, y - 1], [x - 1, y - 1],
+                           [x, y + 2], [x + 1, y + 2], [x + 2, y + 2], [x - 1, y + 2]]
         # print(self.all_sector)
         for i in range(16):
             try:
                 self.screen.blit(image[self.pole[self.all_sector[i][0]][self.all_sector[i][1]]],
-                             (self.all_sector[i][0] * 40, self.all_sector[i][1] * 40))
+                                 (self.all_sector[i][0] * 40, self.all_sector[i][1] * 40))
             except Exception:
                 pass
 
@@ -110,12 +114,12 @@ class Bullet(pygame.sprite.Sprite):
     def three_on_tree(self, cord):
         x, y = cord[0] // 40, cord[1] // 40
         self.all_sector = [[x - 1, y], [x, y], [x + 1, y],
-                      [x, y + 1], [x + 1, y + 1], [x - 1, y + 1],
-                      [x, y - 1], [x + 1, y - 1], [x - 1, y - 1]]
+                           [x, y + 1], [x + 1, y + 1], [x - 1, y + 1],
+                           [x, y - 1], [x + 1, y - 1], [x - 1, y - 1]]
         for i in range(9):
             try:
                 self.screen.blit(image[board.pole[self.all_sector[i][0]][self.all_sector[i][1]]],
-                             (self.all_sector[i][0] * 40, self.all_sector[i][1] * 40))
+                                 (self.all_sector[i][0] * 40, self.all_sector[i][1] * 40))
             except Exception:
                 pass
 
@@ -152,32 +156,32 @@ class Person(pygame.sprite.Sprite):
 
     def move(self, event):
         if event == 119:  # w
-            self.kak[1] -= 2
+            self.kak[1] = - 2
             self.check_pictures[1] = 1
         if event == 97:  # a
-            self.kak[0] -= 2
+            self.kak[0] = - 2
             self.check_pictures[0] = 1
         if event == 115:  # s
-            self.kak[1] += 2
+            self.kak[1] = 2
             self.check_pictures[3] = 1
         if event == 100:  # d
-            self.kak[0] += 2
+            self.kak[0] = 2
             self.check_pictures[2] = 1
         # if event == 101:
         #     print('инвентраь, я верю в него')
 
     def down(self, event):
         if event == 119:  # w
-            self.kak[1] += 2
+            self.kak[1] = 0
             self.check_pictures[1] = 0
         if event == 97:  # a
-            self.kak[0] += 2
+            self.kak[0] = 0
             self.check_pictures[0] = 0
         if event == 115:  # s
-            self.kak[1] -= 2
+            self.kak[1] = 0
             self.check_pictures[3] = 0
         if event == 100:  # d
-            self.kak[0] -= 2
+            self.kak[0] = 0
             self.check_pictures[2] = 0
 
     def going(self):
@@ -190,29 +194,29 @@ class Person(pygame.sprite.Sprite):
                     return collide_list
                 return False
 
-
     def update(self, *args):
         for i in enumerate(self.check_pictures):
             if i[1]:
                 if self.change_pictures[i[0]] == 40:
                     self.image = self.puctures1[i[0]]
-        if self.kak[0] or self.kak[1]:
+        if any(self.kak):
+            self.rect.x += self.kak[0]
             collide = self.going()
             if collide:
-                for elem in collide:
-                    if elem.rect.x == self.rect.x + 40 or elem.rect.x + 40 == self.rect.x:
-                        self.kak[0] = 0
-                    else:
-                        self.rect.x += self.kak[0]
-                    if elem.rect.y == self.rect.y + 40 or elem.rect.y == self.rect.y + 40:
-                        self.kak[1] = 0
-                    else:
-                        self.rect.y += self.kak[1]
-            else:
-                self.rect.x += self.kak[0]
-                self.rect.y += self.kak[1]
-        self.pos = self.rect
+                self.rect.x -= self.kak[0]
+            self.rect.y += self.kak[1]
+            collide = self.going()
+            if collide:
+                self.rect.y -= self.kak[1]
 
+                # if elem.rect.x == self.rect.x + 40 or elem.rect.x + 40 == self.rect.x:
+                #     self.kak[0] = 0
+                # else:
+                #     self.rect.x += self.kak[0]
+                # if elem.rect.y == self.rect.y + 40 or elem.rect.y == self.rect.y + 40:
+                #     self.kak[1] = 0
+                # else:
+                #     self.rect.y += self.kak[1]
 
 
 class Box(pygame.sprite.Sprite):
