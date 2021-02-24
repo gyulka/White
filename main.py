@@ -70,8 +70,10 @@ class Board:  # класс пола
 
 
 class Bullet(pygame.sprite.Sprite):  # класс пули
-    def __init__(self, group, bullets, otkuda, kuda, sc, event, otraj=3):
+    def __init__(self, group, bullets, otkuda, kuda, sc, event, to, by=False, otraj=3):
         super().__init__(group)
+        self.shootedby = by
+        self.to = to
         self.otkuda = otkuda
         self.kuda = kuda
         self.velocity = 10
@@ -81,6 +83,7 @@ class Bullet(pygame.sprite.Sprite):  # класс пули
         self.otraj = otraj
         self.kolvo_otraj = -1
         self.size_bullet = 8
+        self.damage = random.randint(3, 8)
         try:
             self.alfa = math.atan(
                 (self.kuda[0] - self.otkuda[0]) / (self.kuda[1] - self.otkuda[1]))  # нашли направление в градусной мере
@@ -121,7 +124,6 @@ class Bullet(pygame.sprite.Sprite):  # класс пули
             if collide:
                 self.kolvo_otraj += 1
                 self.moving[1] = -self.moving[1]
-                self.moving[0] = -self.moving[0]
         if self.kolvo_otraj >= self.otraj:
             self.kill()
         self.pos = self.rect
@@ -140,6 +142,11 @@ class Bullet(pygame.sprite.Sprite):  # класс пули
                 pass
 
     def isshootedByPlayer(self):
+        return self.shootedby
+
+    def iscollidePlayer(self):
+        if pygame.sprite.spritecollideany(self, self.to):
+            return True
         return False
 
 
@@ -153,10 +160,11 @@ class Person(pygame.sprite.Sprite):  # класс игрока
     mandalorian_left1 = pygame.image.load('data/textures/main_charachter_1/Mandalorian_left_move1.png')
     mandalorian_left2 = pygame.image.load('data/textures/main_charachter_1/Mandalorian_left_move2.png')
 
-    def __init__(self, group, person):
+    def __init__(self, group, person, hp=100):
         super().__init__(group)
         self.add(person)
         self.dop = 10
+        self.hp = hp
         # изменение картинки
         self.check_pictures = [0, 0, 0, 0]
         self.change_pictures = [0, 0, 0, 0]
@@ -237,6 +245,25 @@ class Person(pygame.sprite.Sprite):  # класс игрока
             if collide:
                 self.rect.y -= self.kak[1]
             dno_person.update(self.rect.x, self.rect.y)
+
+    def get_damage(self, value):
+        self.hp -= value
+        if self.hp <= 0:
+            return True
+        return False
+
+
+class Damager(Person):
+    image = pygame.image.load('data/textures/object/monstr.png')
+
+    def __init__(self, all, vrag, hp=30, pos=[620, 320]):
+        super().__init__(all, vrag, hp)
+        self.rect.x = pos[0]
+        self.rect.y = pos[1]
+        self.image = Damager.image
+
+    def update(self, *args):
+        pass
 
 
 class Dno_Pers(pygame.sprite.Sprite):  # класс колайд-хитбокса
@@ -322,10 +349,11 @@ class Dno(pygame.sprite.Sprite):  # класс хитбоксов обектов
 
 
 def init_room(stroka='files/levels/0_2_1.txt', coords=[1280 // 2, 720 // 2]):
-    global all_sprites, character_group, dno_pers, dno_sprite, box_spites, bullet_group, level, txt_level, boxes, person, dno_person
+    global all_sprites, character_group, dno_pers, dno_sprite, box_spites, bullet_group, level, txt_level, boxes, person, dno_person, damager_group
     all_sprites = YAwareGroup()
 
     character_group = pygame.sprite.Group()
+    damager_group = pygame.sprite.Group()
     dno_pers = pygame.sprite.Group()
     dno_sprite = pygame.sprite.Group()
     box_spites = pygame.sprite.Group()
@@ -344,6 +372,7 @@ def init_room(stroka='files/levels/0_2_1.txt', coords=[1280 // 2, 720 // 2]):
         else:
             wol = Wall(wol_sprites, all_sprites, txt_level[i].split())
             dno = Dno(dno_sprite, txt_level[i].split())
+    damager = Damager(all_sprites, damager_group)
     person = Person(all_sprites, character_group)
     dno_person = Dno_Pers(dno_pers)
     person.rect.x, person.rect.y = coords
@@ -385,7 +414,9 @@ if __name__ == '__main__':
             if event.type == pygame.QUIT:
                 running = False
             if event.type == pygame.MOUSEBUTTONDOWN:
-                shooting = Bullet(bullet_group, character_group, person.rect, event.pos, screen, event)
+                shooting = Bullet(bullet_group, character_group, person.rect, event.pos, screen, event, damager_group)
+                if shooting.iscollidePlayer():
+                    person.get_damage(shooting.damage)
             if event.type == pygame.KEYDOWN:
                 person.move(event.key)
             if event.type == pygame.KEYUP:
@@ -400,7 +431,7 @@ if __name__ == '__main__':
                 coord = [0, person.rect.y]
             elif ans == DOWN:
                 li += 1
-                coord = [person.rect.x, 40]
+                coord = [person.rect.x, 0]
             elif ans == LEFT:
                 lj -= 1
                 coord = [1240, person.rect.y]
@@ -415,5 +446,8 @@ if __name__ == '__main__':
         bullet_group.update(0)
         all_sprites.draw(screen)
         bullet_group.draw(screen)
+        pygame.draw.rect(screen, (255, 20, 25), [10, 10, (person.hp * 2), 20])
+        hp_picture = pygame.image.load('data/textures/mini_object/Hp.png')
+        screen.blit(hp_picture, (10, 10))
         pygame.display.flip()
     pygame.quit()
