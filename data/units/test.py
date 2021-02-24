@@ -1,7 +1,7 @@
 import pygame
 import os
 import math
-from Pole import Board
+from data.units.Pole import Board
 
 
 class Bullet(pygame.sprite.Sprite):
@@ -27,7 +27,7 @@ class Bullet(pygame.sprite.Sprite):
                 self.otkuda[1] - self.kuda[1]),
             -self.velocity * math.cos(self.alfa) * (self.otkuda[1] - self.kuda[1]) // abs(
                 self.otkuda[1] - self.kuda[1])]
-        self.image = pygame.image.load('data/textures/mini_object/shoot1.png')
+        self.image = pygame.image.load('../textures/mini_object/shoot1.png')
         self.rect = self.image.get_rect()
         self.rect.x = otkuda[0] + 16
         self.rect.y = otkuda[1] + 40
@@ -56,7 +56,7 @@ class Bullet(pygame.sprite.Sprite):
 
 
 def load_image(name, color_key=None):  # Эта функция знакома всем до боли
-    fullname = os.path.join(r'data\textures\main_charachter_1', name)
+    fullname = os.path.join(r'../textures/main_charachter_1', name)
     try:
         image = pygame.image.load(fullname)
     except pygame.error as message:
@@ -128,7 +128,7 @@ if __name__ == '__main__':
     sp = 2
     smome = False
     #  ------------------------------------------- изображения...
-    logo = pygame.image.load('data/textures/Logo/logo.png')
+    logo = pygame.image.load('../textures/Logo/logo.png')
     #  -------------------------------------------
     screen.blit(logo, (0, 0))
     splash = True  # заставка, ждем начала игры

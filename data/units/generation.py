@@ -1,10 +1,5 @@
 import random
-
-BOX = 'box'
-RIGHT = '2'
-LEFT = '4'
-UP = '1'
-DOWN = '3'
+from data.units.consts import LEFT,RIGHT,UP,DOWN
 
 def gen_map():
     a = 5
@@ -48,9 +43,9 @@ def gen_map():
 
 def gen_room(from1, to1):
     if (from1 == '3' and to1=='1') or (from1 == '1' and to1=='3'):
-        return f'files/levels/{3}_{1}_{1}.txt'
-    return f'files/levels/{from1}_{to1}_{1}.txt'
+        return f'data/levels/{3}_{1}_{1}.txt'
+    return f'data/levels/{from1}_{to1}_{1}.txt'
 
 
 def gen_start():
-    return f'files/levels/0_{2}_1.txt'
+    return f'data/levels/0_{2}_1.txt'

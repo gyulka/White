@@ -3,7 +3,7 @@ import sys
 import pygame
 from PyQt5.QtWidgets import QFileDialog, QWidget, QApplication
 
-import consts
+from data.units import consts
 
 
 class Board:
