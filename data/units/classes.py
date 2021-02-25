@@ -100,7 +100,6 @@ class Person(pygame.sprite.Sprite):  # класс игрока
     mandalorian_left2 = pygame.image.load('data/textures/main_charachter_1/Mandalorian_left_move2.png')
 
     def __init__(self, group, person, hp=100, board=None):
-
         super().__init__(group)
         self.board = board
         self.add(person)
@@ -172,11 +171,17 @@ class Person(pygame.sprite.Sprite):  # класс игрока
             return DOWN
         return None
 
+
     def update(self, *args):  # отрисовка перса
         for i in enumerate(self.check_pictures):  # обновление картинки
             if i[1]:
                 if self.change_pictures[i[0]] == 40:
                     self.image = self.puctures1[i[0]]
+                    self.check_pictures[i[0]] = -1
+                elif self.change_pictures[i[0]] < 0:
+                    self.image = self.puctures2[i[0]]
+                    self.check_pictures[i[0]] = 1
+                self.change_pictures[i[0]] += i[1]
         if any(self.kak):
             self.rect.x += self.kak[0]
             self.dno_person.update(self.rect.x, self.rect.y)
@@ -199,14 +204,62 @@ class Person(pygame.sprite.Sprite):  # класс игрока
 
 class Damager(Person):
     image = pygame.image.load('data/textures/object/monstr.png')
+    mandalorian_up1 = pygame.image.load('data/textures/main_charachter_1/Mandalorian_back_move1.png')
+    mandalorian_up2 = pygame.image.load('data/textures/main_charachter_1/Mandalorian_back_move2.png')
+    mandalorian_down1 = pygame.image.load('data/textures/main_charachter_1/Mandalorian_move1.png')
+    mandalorian_down2 = pygame.image.load('data/textures/main_charachter_1/Mandalorian_move2.png')
+    mandalorian_right1 = pygame.image.load('data/textures/main_charachter_1/Mandalorian_right_move1.png')
+    mandalorian_right2 = pygame.image.load('data/textures/main_charachter_1/Mandalorian_right_move2.png')
+    mandalorian_left1 = pygame.image.load('data/textures/main_charachter_1/Mandalorian_left_move1.png')
+    mandalorian_left2 = pygame.image.load('data/textures/main_charachter_1/Mandalorian_left_move2.png')
 
     def __init__(self, all, vrag, hp=30, pos=[620, 320]):
         super().__init__(all, vrag, hp)
+        self.check_pictures = [0, 0, 0, 0]
+        self.change_pictures = [0, 0, 0, 0]
+        self.puctures1 = [Person.mandalorian_left1, Person.mandalorian_up1,
+                          Person.mandalorian_right1, Person.mandalorian_down1]
+        self.puctures2 = [Person.mandalorian_left2, Person.mandalorian_up2,
+                          Person.mandalorian_right2, Person.mandalorian_down2]
         self.rect.x = pos[0]
         self.rect.y = pos[1]
+        self.kak = [random.randint(0, 2), random.randint(0, 2)]
+        self.skolko_go = random.randint(5, 20)
+        self.skolko_going = 0
         self.image = Damager.image
+        
+    def check_person_in_vier_sector(self):
+        boxes = self.board.get_boxes_in_sector(txt_level, self.rect)
+#         person = Person.rect  #atation this is not good
+        
 
     def update(self, *args):
+        for i in enumerate(self.check_pictures):  # обновление картинки
+            if i[1]:
+                if self.change_pictures[i[0]] == 40:
+                    self.image = self.puctures1[i[0]]
+                    self.check_pictures[i[0]] = -1
+                elif self.change_pictures[i[0]] < 0:
+                    self.image = self.puctures2[i[0]]
+                    self.check_pictures[i[0]] = 1
+                self.change_pictures[i[0]] += i[1]
+        if any(self.kak):
+            self.rect.x += self.kak[0]
+            self.dno_person.update(self.rect.x, self.rect.y)
+            collide = self.going(*args)
+            if collide:
+                self.rect.x -= self.kak[0]
+            self.rect.y += self.kak[1]
+            self.dno_person.update(self.rect.x, self.rect.y)
+            collide = self.going(*args)
+            if collide:
+                self.rect.y -= self.kak[1]
+            self.dno_person.update(self.rect.x, self.rect.y)
+            self.skolko_going += 1
+            if self.skolko_go == self.skolko_going:
+                self.skolko_go = random.randint(5, 20)
+                self.skolko_going = 0
+                self.kak = [random.randint(0, 2), random.randint(0, 2)]
         if self.hp<=0:
             self.kill()
         pos = args[0]
