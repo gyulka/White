@@ -197,8 +197,8 @@ class Person(pygame.sprite.Sprite):  # класс игрока
     def get_damage(self, value):
         self.hp -= value
         if self.hp <= 0:
-            return True
-        return False
+            self.kill()
+
 
 
 class Damager(Person):
@@ -222,8 +222,10 @@ class Damager(Person):
                           Person.mandalorian_right2, Person.mandalorian_down2]
         self.rect.x = pos[0]
         self.rect.y = pos[1]
-        self.kak = [random.randint(0, 2), random.randint(0, 2)]
-        self.skolko_go = random.randint(5, 20)
+        self.kak = [random.randint(-2, 2), random.randint(-2, 2)]
+        if self.kak == [0, 0]:
+            self.kak = [2, 0]
+        self.skolko_go = random.randint(15, 30)
         self.skolko_going = 0
         self.image = Damager.image
 
@@ -258,10 +260,10 @@ class Damager(Person):
             if self.skolko_go == self.skolko_going:
                 self.skolko_go = random.randint(5, 20)
                 self.skolko_going = 0
-                self.kak = [random.randint(0, 2), random.randint(0, 2)]
-        if self.hp <= 0:
-            self.kill()
-        pos = args[0]
+                self.kak = [random.randint(-2, 2), random.randint(-2, 2)]
+                if self.kak == [0, 0]:
+                    self.kak = [2, 0]
+
 
 
 class Dno_Pers(pygame.sprite.Sprite):  # класс колайд-хитбокса
