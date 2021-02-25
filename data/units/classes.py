@@ -171,7 +171,6 @@ class Person(pygame.sprite.Sprite):  # класс игрока
             return DOWN
         return None
 
-
     def update(self, *args):  # отрисовка перса
         for i in enumerate(self.check_pictures):  # обновление картинки
             if i[1]:
@@ -213,8 +212,8 @@ class Damager(Person):
     mandalorian_left1 = pygame.image.load('data/textures/main_charachter_1/Mandalorian_left_move1.png')
     mandalorian_left2 = pygame.image.load('data/textures/main_charachter_1/Mandalorian_left_move2.png')
 
-    def __init__(self, all, vrag, hp=30, pos=[620, 320]):
-        super().__init__(all, vrag, hp)
+    def __init__(self, all, vrag, hp=30, pos=[620, 320], board=None):
+        super().__init__(all, vrag, hp, board)
         self.check_pictures = [0, 0, 0, 0]
         self.change_pictures = [0, 0, 0, 0]
         self.puctures1 = [Person.mandalorian_left1, Person.mandalorian_up1,
@@ -227,13 +226,13 @@ class Damager(Person):
         self.skolko_go = random.randint(5, 20)
         self.skolko_going = 0
         self.image = Damager.image
-        
-    def check_person_in_vier_sector(self):
-        boxes = self.board.get_boxes_in_sector(txt_level, self.rect)
-#         person = Person.rect  #atation this is not good
-        
 
-    def update(self, *args):
+    def check_person_in_vier_sector(self):
+        # boxes = self.board.get_boxes_in_sector(txt_level, self.rect)
+        #         person = Person.rect  #atation this is not good
+        pass
+
+    def update(self, coord, *args):
         for i in enumerate(self.check_pictures):  # обновление картинки
             if i[1]:
                 if self.change_pictures[i[0]] == 40:
@@ -260,7 +259,7 @@ class Damager(Person):
                 self.skolko_go = random.randint(5, 20)
                 self.skolko_going = 0
                 self.kak = [random.randint(0, 2), random.randint(0, 2)]
-        if self.hp<=0:
+        if self.hp <= 0:
             self.kill()
         pos = args[0]
 
