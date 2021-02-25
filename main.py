@@ -31,7 +31,7 @@ def init_room(stroka='files/levels/0_2_1.txt', coords=[1280 // 2, 720 // 2]):
         else:
             wol = Wall(wol_sprites, all_sprites, txt_level[i].split())
             dno = Dno(dno_sprite, txt_level[i].split())
-    damager = Damager(all_sprites, damager_group)
+    damager = Damager(all_sprites, damager_group, board=board)
     person = Person(all_sprites, character_group, board=board)
     dno_person = Dno_Pers(dno_pers)
     person.rect.x, person.rect.y = coords
@@ -100,11 +100,12 @@ if __name__ == '__main__':
 
         board.three_on_four([person.rect.x, person.rect.y])
         character_group.draw(screen)
-        damager_group.update([person.rect.x,person.rect.y],)
+        damager_group.update([person.rect.x,person.rect.y], txt_level, dno_sprite)
         character_group.update(txt_level, dno_sprite)
         bullet_group.update(txt_level, dno_sprite)
         all_sprites.draw(screen)
         bullet_group.draw(screen)
+        pygame.draw.rect(screen, (25, 25, 25), [10, 10, 200, 20])
         pygame.draw.rect(screen, (255, 20, 25), [10, 10, (person.hp * 2), 20])
         hp_picture = pygame.image.load('data/textures/mini_object/Hp.png')
         screen.blit(hp_picture, (10, 10))
