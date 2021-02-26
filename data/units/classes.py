@@ -207,7 +207,6 @@ class Person(pygame.sprite.Sprite):  # класс игрока
             self.kill()
 
 
-
 class Damager(Person):
     image = pygame.image.load('data/textures/not_friends/Shtoormovik.png')
     mandalorian_up1 = pygame.image.load('data/textures/not_friends/Shtoormovik_move1.png')
@@ -302,7 +301,6 @@ class Damager(Person):
                     self.change_pictures[3] = 0
                 else:
                     self.check_pictures[3] = 1
-
 
 
 class Dno_Pers(pygame.sprite.Sprite):  # класс колайд-хитбокса
