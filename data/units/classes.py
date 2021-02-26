@@ -103,6 +103,7 @@ class Person(pygame.sprite.Sprite):  # класс игрока
         super().__init__(group)
         self.board = board
         self.add(person)
+        self.dead = False
         self.dop = 10
         self.hp = hp
         # изменение картинки
@@ -225,6 +226,7 @@ class Person(pygame.sprite.Sprite):  # класс игрока
     def get_damage(self, value):
         self.hp -= value
         if self.hp <= 0:
+            self.dead = True
             self.kill()
 
 

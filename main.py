@@ -8,8 +8,12 @@ from data.units.generation import LEFT, RIGHT, UP, DOWN
 from data.units.consts import back, pause, contin
 
 
-def init_room(stroka='files/levels/0_2_1.txt', coords=[1280 // 2, 720 // 2]):
-    global all_sprites, character_group, dno_pers, dno_sprite, box_spites, bullet_group, level, txt_level, boxes, person, dno_person, damager_group, damagers
+def end_room():
+
+
+
+def init_room(stroka='files/levels/0_2_1.txt', coords=[1280 // 2, 720 // 2], hp=100):
+    global all_sprites, character_group, dno_pers, dno_sprite, box_spites, bullet_group, level, txt_level, boxes, person, dno_person, damager_group, damagers, num_lvl
     all_sprites = YAwareGroup()
     character_group = pygame.sprite.Group()
     damager_group = pygame.sprite.Group()
@@ -19,23 +23,22 @@ def init_room(stroka='files/levels/0_2_1.txt', coords=[1280 // 2, 720 // 2]):
     wol_sprites = pygame.sprite.Group()
     bullet_group = pygame.sprite.Group()
 
+    if li == 2 and lj == 5:
+        end_room()
+
     level = stroka
     txt_level = (open(level).read()).rstrip('\n').split(';')
 
-
     for i in range(len(txt_level)):
-
         if txt_level[i] and txt_level[i].split()[2] == 'box':
-            box =Box(box_spites, all_sprites, txt_level[i].split())
-
-
+            box = Box(box_spites, all_sprites, txt_level[i].split())
             dno = Dno(dno_sprite, txt_level[i].split())
         else:
             wol = Wall(wol_sprites, all_sprites, txt_level[i].split())
             dno = Dno(dno_sprite, txt_level[i].split())
-    person = Person(all_sprites, character_group, board=board)
+    person = Person(all_sprites, character_group, board=board, hp=hp)
     damagers = list()
-    for i in range(num_lvl * 2):
+    for i in range(list_lvl[li][lj]):
         damagers.append(Damager(all_sprites, damager_group, person, txt_level, board=board))
     dno_person = Dno_Pers(dno_pers)
     person.rect.x, person.rect.y = coords
@@ -43,7 +46,7 @@ def init_room(stroka='files/levels/0_2_1.txt', coords=[1280 // 2, 720 // 2]):
 
 
 def Menu():
-    global sl_start, stop, board, li, lj, map_list, map_str, running
+    global sl_start, stop, board, li, lj, map_list, map_str, running, list_lvl, num_lvl
 
     screen.blit(logo, (0, 0))
     timer = pygame.time.Clock()
@@ -89,13 +92,26 @@ def Menu():
     li, lj = 2, 0
     map_list, map_str = generation.gen_map()
     print(*map_list, sep='\n')
+    num_lvl = 1
+    list_lvl = [[0 for _ in range(6)] for i in range(6)]
+    li, lj = 2, 1
+    while li != 2 or lj != 5:
+        list_lvl[li][lj] = num_lvl
+        if map_str[num_lvl - 1] == '1':
+            li -= 1
+        elif map_str[num_lvl - 1] == '2':
+            lj += 1
+        else:
+            li += 1
+        num_lvl += 1
+    li, lj = 2, 0
+
 
     init_room(map_list[li][lj])
 
 
 if __name__ == '__main__':
     pygame.init()
-    num_lvl = 0
     stop = True
     size = (1280, 720)
     screen = pygame.display.set_mode(size)
@@ -154,6 +170,7 @@ if __name__ == '__main__':
                 person.down(event.key)
         ans = person.check_out()
         if ans is not None:
+            list_lvl[li][lj] = sum(map(lambda x: 0 if x.dead else 1, damagers))
             if ans == UP:
                 li -= 1
                 coord = [person.rect.x, 640]
@@ -168,12 +185,11 @@ if __name__ == '__main__':
                 coord = [1240, person.rect.y]
 
             level = map_list[li][lj]
-            print(level)
-            num_lvl += 1
-            init_room(level, coord)
+            init_room(level, coord, person.hp)
             board.render()
 
-
+        if person.dead:
+            pass
 
         if not stop:
             board.three_on_four([person.rect.x, person.rect.y])
