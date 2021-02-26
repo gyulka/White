@@ -8,10 +8,6 @@ from data.units.generation import LEFT, RIGHT, UP, DOWN
 from data.units.consts import back, pause, contin
 
 
-def end_room():
-
-
-
 def init_room(stroka='files/levels/0_2_1.txt', coords=[1280 // 2, 720 // 2], hp=100):
     global all_sprites, character_group, dno_pers, dno_sprite, box_spites, bullet_group, level, txt_level, boxes, person, dno_person, damager_group, damagers, num_lvl
     all_sprites = YAwareGroup()
@@ -22,9 +18,6 @@ def init_room(stroka='files/levels/0_2_1.txt', coords=[1280 // 2, 720 // 2], hp=
     box_spites = pygame.sprite.Group()
     wol_sprites = pygame.sprite.Group()
     bullet_group = pygame.sprite.Group()
-
-    if li == 2 and lj == 5:
-        end_room()
 
     level = stroka
     txt_level = (open(level).read()).rstrip('\n').split(';')
@@ -39,7 +32,7 @@ def init_room(stroka='files/levels/0_2_1.txt', coords=[1280 // 2, 720 // 2], hp=
     person = Person(all_sprites, character_group, board=board, hp=hp)
     damagers = list()
     for i in range(list_lvl[li][lj]):
-        damagers.append(Damager(all_sprites, damager_group, person, txt_level, board=board))
+        damagers.append(Damager(all_sprites, damager_group, person, txt_level, dno_sprite, board=board))
     dno_person = Dno_Pers(dno_pers)
     person.rect.x, person.rect.y = coords
 

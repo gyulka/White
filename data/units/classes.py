@@ -241,7 +241,7 @@ class Damager(Person):
     mandalorian_left1 = pygame.image.load('data/textures/not_friends/Shtoormovik_left_move1.png')
     mandalorian_left2 = pygame.image.load('data/textures/not_friends/Shtoormovik_left_move2.png')
 
-    def __init__(self, all, vrag, person, txt_level, hp=30, pos=[620, 320], board=None):
+    def __init__(self, all, vrag, person, txt_level, boxes, hp=30, pos=[620, 320], board=None, ):
         super().__init__(all, vrag, hp, board)
         self.check_pictures = [0, 0, 0, 0]
         self.change_pictures = [0, 0, 0, 0]
@@ -252,17 +252,20 @@ class Damager(Person):
                           Damager.mandalorian_right1, Damager.mandalorian_down1]
         self.puctures2 = [Damager.mandalorian_left2, Damager.mandalorian_up2,
                           Damager.mandalorian_right2, Damager.mandalorian_down2]
-        self.rect.x = pos[0]
-        self.rect.y = pos[1]
-        var = [True, False]
-        if var[random.randint(0, 1)]:
-            self.kak = [random.randint(-2, 2), 0]
-        else:
-            self.kak = [0, random.randint(-2, 2)]
-        if self.kak == [0, 0]:
-            self.kak = [2, 0]
+        self.rect.x = random.randint(40, 1200)
+        self.rect.y = random.randint(40, 600)
+        self.dno_person.rect.x = self.rect.x
+        self.dno_person.rect.y = self.rect.y + 79
+        while self.going(txt_level, boxes):
+            self.rect.x = random.randint(40, 1200)
+            self.rect.y = random.randint(40, 600)
+            self.dno_person.rect.x = self.rect.x
+            self.dno_person.rect.y = self.rect.y + 79
         self.skolko_go = random.randint(20, 30)
         self.skolko_going = 0
+        self.kak = [random.choice([-2, 2, 0]), random.choice([-2, 2, 0])]
+        if self.kak == [0, 0]:
+            self.kak = [2, 0]
         self.image = Damager.mandalorian_down2
         self.dead = False
 
