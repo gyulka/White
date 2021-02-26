@@ -178,10 +178,10 @@ if __name__ == '__main__':
         if not stop:
             board.three_on_four([person.rect.x, person.rect.y])
             for damager in damagers:
-            board.three_on_four([damager.rect.x, damager.rect.y])
-            if damager.check_person_in_vier_sector(person, txt_level) and damager.can_shoot():
-                shooting = Bullet(bullet_group, damager_group, damager.rect, person.rect, screen, 0,
-                                  to=character_group, txt_level=txt_level, dno_sprite=dno_sprite, board=board)
+                board.three_on_four([damager.rect.x, damager.rect.y])
+                if damager.check_person_in_vier_sector(person, txt_level) and damager.can_shoot():
+                    shooting = Bullet(bullet_group, damager_group, damager.rect, person.rect, screen, 0,
+                                      to=character_group, txt_level=txt_level, dno_sprite=dno_sprite, board=board)
             # character_group.draw(screen)
             damager_group.update([person.rect.x,person.rect.y], txt_level, dno_sprite)
             character_group.update(txt_level, dno_sprite)

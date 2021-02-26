@@ -122,36 +122,41 @@ class Person(pygame.sprite.Sprite):  # класс игрока
         self.dno_pers = pygame.sprite.Group()
         self.dno_person = Dno_Pers(self.dno_pers)
 
+
+    def kill(self) -> None:
+        super().kill()
+        self.dno_person.kill()
+
     def move(self, event):  # кнопку нажали
         if event == 119:  # w
-            self.kak[1] -=  V
+            self.kak[1] = - V
             self.check_pictures[1] = 1
             self.change_pictures[1] = -1
         if event == 97:  # a
-            self.kak[0] -=  V
+            self.kak[0] = - V
             self.check_pictures[0] = 1
             self.change_pictures[0] = -1
         if event == 115:  # s
-            self.kak[1] += V
+            self.kak[1] = V
             self.check_pictures[3] = 1
             self.change_pictures[3] = -1
         if event == 100:  # d
-            self.kak[0] += V
+            self.kak[0] = V
             self.check_pictures[2] = 1
             self.change_pictures[2] = -1
 
     def down(self, event):  # кнопку отжали
         if event == 119:  # w
-            self.kak[1] +=V
+            self.kak[1] =0
             self.check_pictures[1] = 0
         if event == 97:  # a
-            self.kak[0] += V
+            self.kak[0] = 0
             self.check_pictures[0] = 0
         if event == 115:  # s
-            self.kak[1] -= V
+            self.kak[1] = 0
             self.check_pictures[3] = 0
         if event == 100:  # d
-            self.kak[0] -= V
+            self.kak[0] = 0
             self.check_pictures[2] = 0
 
     def going(self, txt_level, dno_sprite):  # проверка на возможность движения
@@ -257,13 +262,20 @@ class Damager(Person):
         self.skolko_go = random.randint(20, 30)
         self.skolko_going = 0
         self.image = Damager.mandalorian_down2
+        self.dead = False
 
     def can_shoot(self):
+        if self.dead:
+            return False
         if self.can_gun == 0:
             self.can_gun = 20
             return True
         self.can_gun -= 1
         return False
+
+    def kill(self) -> None:
+        super().kill()
+        self.dead = True
 
     def check_person_in_vier_sector(self, person, txt_level):
         if (self.rect.x // 40 - 2 <= person.rect.x // 40 <= self.rect.x // 40 + 2
