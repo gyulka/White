@@ -8,7 +8,7 @@ from data.units.generation import LEFT, RIGHT, UP, DOWN
 
 
 def init_room(stroka='files/levels/0_2_1.txt', coords=[1280 // 2, 720 // 2]):
-    global all_sprites, character_group, dno_pers, dno_sprite, box_spites, bullet_group, level, txt_level, boxes, person, dno_person, damager_group
+    global all_sprites, character_group, dno_pers, dno_sprite, box_spites, bullet_group, level, txt_level, boxes, person, dno_person, damager_group, damager
     all_sprites = YAwareGroup()
 
     character_group = pygame.sprite.Group()
@@ -100,7 +100,8 @@ if __name__ == '__main__':
             board.render()
 
         board.three_on_four([person.rect.x, person.rect.y])
-        character_group.draw(screen)
+        board.three_on_four([damager.rect.x, damager.rect.y])
+        # character_group.draw(screen)
         damager_group.update([person.rect.x,person.rect.y], txt_level, dno_sprite)
         character_group.update(txt_level, dno_sprite)
         bullet_group.update(txt_level, dno_sprite)

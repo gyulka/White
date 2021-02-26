@@ -209,15 +209,15 @@ class Person(pygame.sprite.Sprite):  # класс игрока
 
 
 class Damager(Person):
-    image = pygame.image.load('data/textures/object/monstr.png')
-    mandalorian_up1 = pygame.image.load('data/textures/main_charachter_1/Mandalorian_back_move1.png')
-    mandalorian_up2 = pygame.image.load('data/textures/main_charachter_1/Mandalorian_back_move2.png')
-    mandalorian_down1 = pygame.image.load('data/textures/main_charachter_1/Mandalorian_move1.png')
-    mandalorian_down2 = pygame.image.load('data/textures/main_charachter_1/Mandalorian_move2.png')
-    mandalorian_right1 = pygame.image.load('data/textures/main_charachter_1/Mandalorian_right_move1.png')
-    mandalorian_right2 = pygame.image.load('data/textures/main_charachter_1/Mandalorian_right_move2.png')
-    mandalorian_left1 = pygame.image.load('data/textures/main_charachter_1/Mandalorian_left_move1.png')
-    mandalorian_left2 = pygame.image.load('data/textures/main_charachter_1/Mandalorian_left_move2.png')
+    image = pygame.image.load('data/textures/not_friends/Shtoormovik.png')
+    mandalorian_up1 = pygame.image.load('data/textures/not_friends/Shtoormovik_move1.png')
+    mandalorian_up2 = pygame.image.load('data/textures/not_friends/Shtoormovik_move2.png')
+    mandalorian_down1 = pygame.image.load('data/textures/not_friends/Shtoormovik_move1.png')
+    mandalorian_down2 = pygame.image.load('data/textures/not_friends/Shtoormovik_move2.png')
+    mandalorian_right1 = pygame.image.load('data/textures/not_friends/Shtoormovik_right_move1.png')
+    mandalorian_right2 = pygame.image.load('data/textures/not_friends/Shtoormovik_right_move2.png')
+    mandalorian_left1 = pygame.image.load('data/textures/not_friends/Shtoormovik_left_move1.png')
+    mandalorian_left2 = pygame.image.load('data/textures/not_friends/Shtoormovik_left_move2.png')
 
     def __init__(self, all, vrag, hp=30, pos=[620, 320], board=None):
         super().__init__(all, vrag, hp, board)
