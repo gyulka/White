@@ -268,7 +268,8 @@ class Damager(Person):
 
     def check_person_in_vier_sector(self, person, txt_level):
         if (self.rect.x // 40 - 2 <= person.rect.x // 40 <= self.rect.x // 40 + 2
-                and self.rect.y // 40 - 2 <= person.rect.y // 40 <= self.rect.y // 40 + 2):
+                and self.rect.y // 40 - 2 <= person.rect.y // 40 <= self.rect.y // 40 + 2) \
+                or person.rect.x == self.rect.x or person.rect.y == self.rect.y:
             kuda = [person.rect.x, person.rect.y]
             otkuda = [self.rect.x, self.rect.y]
             try:
