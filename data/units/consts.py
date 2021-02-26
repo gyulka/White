@@ -17,5 +17,8 @@ golv = pygame.image.load('data/textures/object/golv.png')
 golv2 = pygame.image.load('data/textures/object/golv2.png')
 golv3 = pygame.image.load('data/textures/object/golv3.png')
 wol = pygame.image.load('data/textures/object/wol.png')
+back = pygame.image.load('data/textures/mini_object/back.png')
+pause = pygame.image.load('data/textures/mini_object/stop.png')
+contin = pygame.image.load('data/textures/mini_object/continue.png')
 image = {'box1': box1, 'box2': box2, 'box3': box3, 'box4': box4, 'golv': golv, 'golv2': golv2, 'golv3': golv3,
          'wol': wol}
