@@ -8,9 +8,8 @@ from data.units.generation import LEFT, RIGHT, UP, DOWN
 
 
 def init_room(stroka='files/levels/0_2_1.txt', coords=[1280 // 2, 720 // 2]):
-    global all_sprites, character_group, dno_pers, dno_sprite, box_spites, bullet_group, level, txt_level, boxes, person, dno_person, damager_group, damager
+    global all_sprites, character_group, dno_pers, dno_sprite, box_spites, bullet_group, level, txt_level, boxes, person, dno_person, damager_group, damagers
     all_sprites = YAwareGroup()
-
     character_group = pygame.sprite.Group()
     damager_group = pygame.sprite.Group()
     dno_pers = pygame.sprite.Group()
@@ -22,23 +21,25 @@ def init_room(stroka='files/levels/0_2_1.txt', coords=[1280 // 2, 720 // 2]):
     level = stroka
     txt_level = (open(level).read()).rstrip('\n').split(';')
 
-    # boxes = dict()
     for i in range(len(txt_level)):
 
         if txt_level[i] and txt_level[i].split()[2] == 'box':
-            box =Box(box_spites, all_sprites, txt_level[i].split())
+            box = Box(box_spites, all_sprites, txt_level[i].split())
             dno = Dno(dno_sprite, txt_level[i].split())
         else:
             wol = Wall(wol_sprites, all_sprites, txt_level[i].split())
             dno = Dno(dno_sprite, txt_level[i].split())
-    damager = Damager(all_sprites, damager_group, board=board)
     person = Person(all_sprites, character_group, board=board)
+    damagers = list()
+    for i in range(num_lvl * 2):
+        damagers.append(Damager(all_sprites, damager_group, person, txt_level, board=board))
     dno_person = Dno_Pers(dno_pers)
     person.rect.x, person.rect.y = coords
 
 
 if __name__ == '__main__':
     pygame.init()
+    num_lvl = 0
     size = (1280, 720)
     screen = pygame.display.set_mode(size)
     screen.fill((0, 0, 0))
@@ -96,17 +97,22 @@ if __name__ == '__main__':
 
             level = map_list[li][lj]
             print(level)
+            num_lvl += 1
             init_room(level, coord)
             board.render()
 
         board.three_on_four([person.rect.x, person.rect.y])
-        board.three_on_four([damager.rect.x, damager.rect.y])
+        for damager in damagers:
+            board.three_on_four([damager.rect.x, damager.rect.y])
+            if damager.check_person_in_vier_sector(person, txt_level) and damager.can_shoot():
+                shooting = Bullet(bullet_group, damager_group, damager.rect, person.rect, screen, 0,
+                                  to=character_group, txt_level=txt_level, dno_sprite=dno_sprite, board=board)
         # character_group.draw(screen)
         damager_group.update([person.rect.x,person.rect.y], txt_level, dno_sprite)
         character_group.update(txt_level, dno_sprite)
         bullet_group.update(txt_level, dno_sprite)
-        all_sprites.draw(screen)
         bullet_group.draw(screen)
+        all_sprites.draw(screen)
         pygame.draw.rect(screen, (25, 25, 25), [10, 10, 200, 20])
         pygame.draw.rect(screen, (255, 20, 25), [10, 10, (person.hp * 2), 20])
         hp_picture = pygame.image.load('data/textures/mini_object/Hp.png')

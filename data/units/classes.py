@@ -155,14 +155,29 @@ class Person(pygame.sprite.Sprite):  # класс игрока
             self.check_pictures[2] = 0
 
     def going(self, txt_level, dno_sprite):  # проверка на возможность движения
-        x = self.board.get_boxes_in_sector(txt_level, self.board.all_sector)
-        for elem in x:
-            if elem is not None:
-                elem = elem[::-1]
-                collide_list = pygame.sprite.spritecollide(self.dno_person, dno_sprite, False)
-                if collide_list:
-                    return collide_list
-                return False
+        collide_list = pygame.sprite.spritecollide(self.dno_person, dno_sprite, False)
+        if collide_list:
+            return collide_list
+        return False
+
+    def change_image(self):
+        if self.kak[0] > 0:
+            self.change_pictures = [0] * 4
+            self.check_pictures = [0] * 4
+            self.check_pictures[2] = 1
+        elif self.kak[0] < 0:
+            self.change_pictures = [0] * 4
+            self.check_pictures = [0] * 4
+            self.check_pictures[0] = 1
+
+        if self.kak[1] > 0:
+            self.change_pictures = [0] * 4
+            self.check_pictures = [0] * 4
+            self.check_pictures[1] = 1
+        elif self.kak[1] < 0:
+            self.change_pictures = [0] * 4
+            self.check_pictures = [0] * 4
+            self.check_pictures[3] = 1
 
     def check_out(self):
         if self.rect.x <= -40:
@@ -178,14 +193,15 @@ class Person(pygame.sprite.Sprite):  # класс игрока
     def update(self, *args):  # отрисовка перса
         image = None
         for i in enumerate(self.check_pictures):  # обновление картинки
-            if i[1]:
-                if self.change_pictures[i[0]] == 5:
+            if i[1] != 0:
+                if self.change_pictures[i[0]] >= 3:
                     image = self.puctures1[i[0]]
                     self.check_pictures[i[0]] = -1
                 elif self.change_pictures[i[0]] < 0:
                     image = self.puctures2[i[0]]
                     self.check_pictures[i[0]] = 1
                 self.change_pictures[i[0]] += i[1]
+                break
         if image is not None:
             self.image = image
         if any(self.kak):
@@ -219,10 +235,13 @@ class Damager(Person):
     mandalorian_left1 = pygame.image.load('data/textures/not_friends/Shtoormovik_left_move1.png')
     mandalorian_left2 = pygame.image.load('data/textures/not_friends/Shtoormovik_left_move2.png')
 
-    def __init__(self, all, vrag, hp=30, pos=[620, 320], board=None):
+    def __init__(self, all, vrag, person, txt_level, hp=30, pos=[620, 320], board=None):
         super().__init__(all, vrag, hp, board)
         self.check_pictures = [0, 0, 0, 0]
         self.change_pictures = [0, 0, 0, 0]
+        self.can_gun = 20
+        self.person = person
+        self.txt_level = txt_level
         self.puctures1 = [Damager.mandalorian_left1, Damager.mandalorian_up1,
                           Damager.mandalorian_right1, Damager.mandalorian_down1]
         self.puctures2 = [Damager.mandalorian_left2, Damager.mandalorian_up2,
@@ -240,68 +259,69 @@ class Damager(Person):
         self.skolko_going = 0
         self.image = Damager.mandalorian_down2
 
-    def check_person_in_vier_sector(self):
-        # boxes = self.board.get_boxes_in_sector(txt_level, self.rect)
-        #         person = Person.rect  #atation this is not good
-        pass
+    def can_shoot(self):
+        if self.can_gun == 0:
+            self.can_gun = 20
+            return True
+        self.can_gun -= 1
+        return False
+
+    def check_person_in_vier_sector(self, person, txt_level):
+        if (self.rect.x // 40 - 2 <= person.rect.x // 40 <= self.rect.x // 40 + 2
+                and self.rect.y // 40 - 2 <= person.rect.y // 40 <= self.rect.y // 40 + 2):
+            kuda = [person.rect.x, person.rect.y]
+            otkuda = [self.rect.x, self.rect.y]
+            try:
+                alfa = math.atan(
+                    (kuda[0] - otkuda[0]) / (
+                                kuda[1] - otkuda[1]))  # нашли направление в градусной мере
+                self.kak = [
+                    -2 * math.sin(alfa) * (otkuda[1] - kuda[1]) // abs(
+                        otkuda[1] - kuda[1]),
+                    -2 * math.cos(alfa) * (otkuda[1] - kuda[1]) // abs(
+                        otkuda[1] - kuda[1])]
+            except Exception:
+                self.kak = [-2, 0]
+            return True
+        return False
 
     def update(self, coord, *args):
         image = None
         for i in enumerate(self.check_pictures):  # обновление картинки
             if i[1] != 0:
-                if self.change_pictures[i[0]] == 3:
+                if self.change_pictures[i[0]] >= 3:
                     image = self.puctures1[i[0]]
                     self.check_pictures[i[0]] = -1
                 elif self.change_pictures[i[0]] < 0:
                     image = self.puctures2[i[0]]
                     self.check_pictures[i[0]] = 1
                 self.change_pictures[i[0]] += i[1]
+                break
         if image is not None:
             self.image = image
+        self.check_person_in_vier_sector(self.person, self.txt_level)
         if any(self.kak):
             self.rect.x += self.kak[0]
+            self.skolko_going += 1
             self.dno_person.update(self.rect.x, self.rect.y)
             collide = self.going(*args)
             if collide:
                 self.rect.x -= self.kak[0]
+                self.skolko_go = self.skolko_going
             self.rect.y += self.kak[1]
             self.dno_person.update(self.rect.x, self.rect.y)
             collide = self.going(*args)
             if collide:
                 self.rect.y -= self.kak[1]
+                self.skolko_go = self.skolko_going
             self.dno_person.update(self.rect.x, self.rect.y)
-            self.skolko_going += 1
-            if self.skolko_go == self.skolko_going:
+            if self.skolko_go == self.skolko_going and not self.check_person_in_vier_sector(self.person, self.txt_level):
                 self.skolko_go = random.randint(20, 30)
                 self.skolko_going = 0
-                var = [True, False]
-                if var[random.randint(0, 1)]:
-                    self.kak = [random.randint(-2, 2), 0]
-                else:
-                    self.kak = [0, random.randint(-2, 2)]
+                self.kak = [random.choice([-2, 2, 0]), random.choice([-2, 2, 0])]
                 if self.kak == [0, 0]:
                     self.kak = [2, 0]
-                if self.kak[0] > 0:
-                    self.check_pictures[0] = 0
-                    self.change_pictures[0] = 0
-                else:
-                    self.check_pictures[0] = 1
-                if self.kak[0] < 0:
-                    self.check_pictures[2] = 0
-                    self.change_pictures[2] = 0
-                else:
-                    self.check_pictures[2] = 1
-
-                if self.kak[1] > 0:
-                    self.check_pictures[1] = 0
-                    self.change_pictures[1] = 0
-                else:
-                    self.check_pictures[1] = 1
-                if self.kak[1] < 0:
-                    self.check_pictures[3] = 0
-                    self.change_pictures[3] = 0
-                else:
-                    self.check_pictures[3] = 1
+                self.change_image()
 
 
 
@@ -322,7 +342,7 @@ class Dno_Pers(pygame.sprite.Sprite):  # класс колайд-хитбокс�
 class Wall(pygame.sprite.Sprite):  # класс обектов
     def __init__(self, obj, group, pos):
         super().__init__(group)
-        if len(pos)<2:
+        if len(pos) < 2:
             self.kill()
         else:
             self.add(obj)

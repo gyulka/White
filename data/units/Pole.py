@@ -43,10 +43,11 @@ class Board:  # класс пола
                 pass
 
     def get_boxes_in_sector(self, level, sector):  # выдает список коробок в секторе
-        flag = [None] * len(sector)
+        flag = [[None for i in range(int(len(sector) ** 0.5))] for _ in range(int(len(sector) ** 0.5))]
         for elem in enumerate(sector):
             if f'{elem[1][1]} {elem[1][0]} box' in level or f'{elem[1][1]} {elem[1][0]} wall' in level:
-                flag[elem[0]] = elem[1]
+                print(elem[0], elem[1], elem[0] // int(len(sector) ** 0.5), elem[0] % int(len(sector) ** 0.5))
+                flag[elem[0] // int(len(sector) ** 0.5)][elem[0] % int(len(sector) ** 0.5)] = elem[1]
         return flag
 
     def render(self):
