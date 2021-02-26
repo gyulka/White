@@ -99,10 +99,11 @@ class Person(pygame.sprite.Sprite):  # класс игрока
     mandalorian_left1 = pygame.image.load('data/textures/main_charachter_1/Mandalorian_left_move1.png')
     mandalorian_left2 = pygame.image.load('data/textures/main_charachter_1/Mandalorian_left_move2.png')
 
-    def __init__(self, group, person, hp=100, board=None):
+    def __init__(self, group, person, hp=100, board=None, expirents=0):
         super().__init__(group)
         self.board = board
         self.add(person)
+        self.excpirents = expirents
         self.dop = 10
         self.hp = hp
         # изменение картинки
@@ -230,9 +231,13 @@ class Damager(Person):
         self.image = Damager.image
 
     def check_person_in_vier_sector(self):
-        # boxes = self.board.get_boxes_in_sector(txt_level, self.rect)
-        #         person = Person.rect  #atation this is not good
-        pass
+        if self.rect.x // 40 - 2 <= person.rect.x // 40 <= self.rect.x // 40 + 2 and self.rect.y // 40 - 2 <= person.rect.y // 40 <= self.rect.y // 40 + 2
+            boxes = self.board.get_boxes_in_sector(txt_level, self.board.all_sector)
+            pers = [person.rect.x // 40, person.rect.y // 40]
+            boxes[4 - self.rect.x // 40 + pers[0]][4 - self.rect.y // 40 + pers[1]]
+            boxes[2][2] = [damager]
+            
+        
 
     def update(self, coord, *args):
         for i in enumerate(self.check_pictures):  # обновление картинки
@@ -258,12 +263,11 @@ class Damager(Person):
             self.dno_person.update(self.rect.x, self.rect.y)
             self.skolko_going += 1
             if self.skolko_go == self.skolko_going:
-                self.skolko_go = random.randint(5, 20)
+                self.skolko_go = random.randint(20, 30)
                 self.skolko_going = 0
                 self.kak = [random.randint(-2, 2), random.randint(-2, 2)]
                 if self.kak == [0, 0]:
                     self.kak = [2, 0]
-
 
 
 class Dno_Pers(pygame.sprite.Sprite):  # класс колайд-хитбокса
