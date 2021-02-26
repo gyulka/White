@@ -8,6 +8,8 @@ UP = '1'
 DOWN = '3'
 
 
+V=2
+
 
 box1 = pygame.image.load('data/textures/object/box1.png')
 box2 = pygame.image.load('data/textures/object/box2.png')
