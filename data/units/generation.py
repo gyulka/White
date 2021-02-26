@@ -1,4 +1,5 @@
 import random
+
 from data.units.consts import LEFT,RIGHT,UP,DOWN
 
 def gen_map():
@@ -39,10 +40,17 @@ def gen_map():
             j += 1
         elif from1 == DOWN:
             j -= 1
+    if lis[1][-1] is not None:
+        lis[2][-1] = gen_room(UP, 0)
+    elif lis[3][-1]:
+        lis[2][-1] = gen_room(DOWN, 0)
+    else:
+        lis[2][-1] = gen_room(LEFT, 0)
     return lis, ans
 
+
 def gen_room(from1, to1):
-    if (from1 == '3' and to1=='1') or (from1 == '1' and to1=='3'):
+    if (from1 == '3' and to1 == '1') or (from1 == '1' and to1 == '3'):
         return f'data/levels/{3}_{1}_{1}.txt'
     return f'data/levels/{from1}_{to1}_{1}.txt'
 

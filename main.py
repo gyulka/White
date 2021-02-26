@@ -9,7 +9,7 @@ from data.units.consts import back, pause, contin
 
 
 def init_room(stroka='files/levels/0_2_1.txt', coords=[1280 // 2, 720 // 2]):
-    global all_sprites, character_group, dno_pers, dno_sprite, box_spites, bullet_group, level, txt_level, boxes, person, dno_person, damager_group
+    global all_sprites, character_group, dno_pers, dno_sprite, box_spites, bullet_group, level, txt_level, boxes, person, dno_person, damager_group, damager
     all_sprites = YAwareGroup()
     character_group = pygame.sprite.Group()
     damager_group = pygame.sprite.Group()
@@ -20,12 +20,15 @@ def init_room(stroka='files/levels/0_2_1.txt', coords=[1280 // 2, 720 // 2]):
     bullet_group = pygame.sprite.Group()
 
     level = stroka
-    txt_level = (open(level).read()).split(';')
+    txt_level = (open(level).read()).rstrip('\n').split(';')
 
+
+    # boxes = dict()
     for i in range(len(txt_level)):
-        if txt_level[i].split()[2] == 'box':
-            box = txt_level[i].split()[:2]
-            dict().update({','.join(box): Box(box_spites, all_sprites, txt_level[i].split())})
+
+        if txt_level[i] and txt_level[i].split()[2] == 'box':
+            box =Box(box_spites, all_sprites, txt_level[i].split())
+
             dno = Dno(dno_sprite, txt_level[i].split())
         else:
             wol = Wall(wol_sprites, all_sprites, txt_level[i].split())
@@ -160,8 +163,10 @@ if __name__ == '__main__':
                 coord = [1240, person.rect.y]
 
             level = map_list[li][lj]
+            print(level)
             init_room(level, coord)
             board.render()
+
         if not stop:
             board.three_on_four([person.rect.x, person.rect.y])
             character_group.draw(screen)
@@ -175,5 +180,6 @@ if __name__ == '__main__':
             hp_picture = pygame.image.load('data/textures/mini_object/Hp.png')
             screen.blit(hp_picture, (10, 10))
             screen.blit(pause, (1220, 30))
+
         pygame.display.flip()
     pygame.quit()

@@ -3,7 +3,7 @@ import random
 
 import pygame
 
-from data.units.consts import image, LEFT, UP, RIGHT, DOWN
+from data.units.consts import image, LEFT, UP, RIGHT, DOWN,V
 
 
 class Bullet(pygame.sprite.Sprite):  # класс пули
@@ -124,17 +124,21 @@ class Person(pygame.sprite.Sprite):  # класс игрока
 
     def move(self, event):  # кнопку нажали
         if event == 119:  # w
-            self.kak[1] = - 2
+            self.kak[1] = - V
             self.check_pictures[1] = 1
+            self.change_pictures[1] = -1
         if event == 97:  # a
-            self.kak[0] = - 2
+            self.kak[0] = - V
             self.check_pictures[0] = 1
+            self.change_pictures[0] = -1
         if event == 115:  # s
-            self.kak[1] = 2
+            self.kak[1] = V
             self.check_pictures[3] = 1
+            self.change_pictures[3] = -1
         if event == 100:  # d
-            self.kak[0] = 2
+            self.kak[0] = V
             self.check_pictures[2] = 1
+            self.change_pictures[2] = -1
 
     def down(self, event):  # кнопку отжали
         if event == 119:  # w
@@ -172,15 +176,18 @@ class Person(pygame.sprite.Sprite):  # класс игрока
         return None
 
     def update(self, *args):  # отрисовка перса
+        image = None
         for i in enumerate(self.check_pictures):  # обновление картинки
             if i[1]:
-                if self.change_pictures[i[0]] == 40:
-                    self.image = self.puctures1[i[0]]
+                if self.change_pictures[i[0]] == 5:
+                    image = self.puctures1[i[0]]
                     self.check_pictures[i[0]] = -1
                 elif self.change_pictures[i[0]] < 0:
-                    self.image = self.puctures2[i[0]]
+                    image = self.puctures2[i[0]]
                     self.check_pictures[i[0]] = 1
                 self.change_pictures[i[0]] += i[1]
+        if image is not None:
+            self.image = image
         if any(self.kak):
             self.rect.x += self.kak[0]
             self.dno_person.update(self.rect.x, self.rect.y)
@@ -201,32 +208,36 @@ class Person(pygame.sprite.Sprite):  # класс игрока
 
 
 class Damager(Person):
-    image = pygame.image.load('data/textures/object/monstr.png')
-    mandalorian_up1 = pygame.image.load('data/textures/main_charachter_1/Mandalorian_back_move1.png')
-    mandalorian_up2 = pygame.image.load('data/textures/main_charachter_1/Mandalorian_back_move2.png')
-    mandalorian_down1 = pygame.image.load('data/textures/main_charachter_1/Mandalorian_move1.png')
-    mandalorian_down2 = pygame.image.load('data/textures/main_charachter_1/Mandalorian_move2.png')
-    mandalorian_right1 = pygame.image.load('data/textures/main_charachter_1/Mandalorian_right_move1.png')
-    mandalorian_right2 = pygame.image.load('data/textures/main_charachter_1/Mandalorian_right_move2.png')
-    mandalorian_left1 = pygame.image.load('data/textures/main_charachter_1/Mandalorian_left_move1.png')
-    mandalorian_left2 = pygame.image.load('data/textures/main_charachter_1/Mandalorian_left_move2.png')
+    image = pygame.image.load('data/textures/not_friends/Shtoormovik.png')
+    mandalorian_up1 = pygame.image.load('data/textures/not_friends/Shtoormovik_move1.png')
+    mandalorian_up2 = pygame.image.load('data/textures/not_friends/Shtoormovik_move2.png')
+    mandalorian_down1 = pygame.image.load('data/textures/not_friends/Shtoormovik_move1.png')
+    mandalorian_down2 = pygame.image.load('data/textures/not_friends/Shtoormovik_move2.png')
+    mandalorian_right1 = pygame.image.load('data/textures/not_friends/Shtoormovik_right_move1.png')
+    mandalorian_right2 = pygame.image.load('data/textures/not_friends/Shtoormovik_right_move2.png')
+    mandalorian_left1 = pygame.image.load('data/textures/not_friends/Shtoormovik_left_move1.png')
+    mandalorian_left2 = pygame.image.load('data/textures/not_friends/Shtoormovik_left_move2.png')
 
     def __init__(self, all, vrag, hp=30, pos=[620, 320], board=None):
         super().__init__(all, vrag, hp, board)
         self.check_pictures = [0, 0, 0, 0]
         self.change_pictures = [0, 0, 0, 0]
-        self.puctures1 = [Person.mandalorian_left1, Person.mandalorian_up1,
-                          Person.mandalorian_right1, Person.mandalorian_down1]
-        self.puctures2 = [Person.mandalorian_left2, Person.mandalorian_up2,
-                          Person.mandalorian_right2, Person.mandalorian_down2]
+        self.puctures1 = [Damager.mandalorian_left1, Damager.mandalorian_up1,
+                          Damager.mandalorian_right1, Damager.mandalorian_down1]
+        self.puctures2 = [Damager.mandalorian_left2, Damager.mandalorian_up2,
+                          Damager.mandalorian_right2, Damager.mandalorian_down2]
         self.rect.x = pos[0]
         self.rect.y = pos[1]
-        self.kak = [random.randint(-2, 2), random.randint(-2, 2)]
+        var = [True, False]
+        if var[random.randint(0, 1)]:
+            self.kak = [random.randint(-2, 2), 0]
+        else:
+            self.kak = [0, random.randint(-2, 2)]
         if self.kak == [0, 0]:
             self.kak = [2, 0]
-        self.skolko_go = random.randint(15, 30)
+        self.skolko_go = random.randint(20, 30)
         self.skolko_going = 0
-        self.image = Damager.image
+        self.image = Damager.mandalorian_down2
 
     def check_person_in_vier_sector(self):
         # boxes = self.board.get_boxes_in_sector(txt_level, self.rect)
@@ -234,15 +245,18 @@ class Damager(Person):
         pass
 
     def update(self, coord, *args):
+        image = None
         for i in enumerate(self.check_pictures):  # обновление картинки
-            if i[1]:
-                if self.change_pictures[i[0]] == 40:
-                    self.image = self.puctures1[i[0]]
+            if i[1] != 0:
+                if self.change_pictures[i[0]] == 3:
+                    image = self.puctures1[i[0]]
                     self.check_pictures[i[0]] = -1
                 elif self.change_pictures[i[0]] < 0:
-                    self.image = self.puctures2[i[0]]
+                    image = self.puctures2[i[0]]
                     self.check_pictures[i[0]] = 1
                 self.change_pictures[i[0]] += i[1]
+        if image is not None:
+            self.image = image
         if any(self.kak):
             self.rect.x += self.kak[0]
             self.dno_person.update(self.rect.x, self.rect.y)
@@ -257,11 +271,36 @@ class Damager(Person):
             self.dno_person.update(self.rect.x, self.rect.y)
             self.skolko_going += 1
             if self.skolko_go == self.skolko_going:
-                self.skolko_go = random.randint(5, 20)
+                self.skolko_go = random.randint(20, 30)
                 self.skolko_going = 0
-                self.kak = [random.randint(-2, 2), random.randint(-2, 2)]
+                var = [True, False]
+                if var[random.randint(0, 1)]:
+                    self.kak = [random.randint(-2, 2), 0]
+                else:
+                    self.kak = [0, random.randint(-2, 2)]
                 if self.kak == [0, 0]:
                     self.kak = [2, 0]
+                if self.kak[0] > 0:
+                    self.check_pictures[0] = 0
+                    self.change_pictures[0] = 0
+                else:
+                    self.check_pictures[0] = 1
+                if self.kak[0] < 0:
+                    self.check_pictures[2] = 0
+                    self.change_pictures[2] = 0
+                else:
+                    self.check_pictures[2] = 1
+
+                if self.kak[1] > 0:
+                    self.check_pictures[1] = 0
+                    self.change_pictures[1] = 0
+                else:
+                    self.check_pictures[1] = 1
+                if self.kak[1] < 0:
+                    self.check_pictures[3] = 0
+                    self.change_pictures[3] = 0
+                else:
+                    self.check_pictures[3] = 1
 
 
 class Dno_Pers(pygame.sprite.Sprite):  # класс колайд-хитбокса
@@ -281,17 +320,20 @@ class Dno_Pers(pygame.sprite.Sprite):  # класс колайд-хитбокс�
 class Wall(pygame.sprite.Sprite):  # класс обектов
     def __init__(self, obj, group, pos):
         super().__init__(group)
-        self.add(obj)
-        self.image = image['wol']
-        self.rect = self.image.get_rect()
-        self.rect.w = 40
-        self.rect.h = 40
-        self.rect.width = 40
-        self.rect.height = 40
-        self.rect.x = int(pos[1]) * 40
-        self.rect.y = int(pos[0]) * 40 - 79
-        self.pos = self.rect
-        self.dop = 10
+        if len(pos)<2:
+            self.kill()
+        else:
+            self.add(obj)
+            self.image = image['wol']
+            self.rect = self.image.get_rect()
+            self.rect.w = 40
+            self.rect.h = 40
+            self.rect.width = 40
+            self.rect.height = 40
+            self.rect.x = int(pos[1]) * 40
+            self.rect.y = int(pos[0]) * 40 - 79
+            self.pos = self.rect
+            self.dop = 10
 
 
 class Box(pygame.sprite.Sprite):  # класс обектов
