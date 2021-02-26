@@ -124,34 +124,34 @@ class Person(pygame.sprite.Sprite):  # класс игрока
 
     def move(self, event):  # кнопку нажали
         if event == 119:  # w
-            self.kak[1] = - V
+            self.kak[1] -=  V
             self.check_pictures[1] = 1
             self.change_pictures[1] = -1
         if event == 97:  # a
-            self.kak[0] = - V
+            self.kak[0] -=  V
             self.check_pictures[0] = 1
             self.change_pictures[0] = -1
         if event == 115:  # s
-            self.kak[1] = V
+            self.kak[1] += V
             self.check_pictures[3] = 1
             self.change_pictures[3] = -1
         if event == 100:  # d
-            self.kak[0] = V
+            self.kak[0] += V
             self.check_pictures[2] = 1
             self.change_pictures[2] = -1
 
     def down(self, event):  # кнопку отжали
         if event == 119:  # w
-            self.kak[1] = 0
+            self.kak[1] +=V
             self.check_pictures[1] = 0
         if event == 97:  # a
-            self.kak[0] = 0
+            self.kak[0] += V
             self.check_pictures[0] = 0
         if event == 115:  # s
-            self.kak[1] = 0
+            self.kak[1] -= V
             self.check_pictures[3] = 0
         if event == 100:  # d
-            self.kak[0] = 0
+            self.kak[0] -= V
             self.check_pictures[2] = 0
 
     def going(self, txt_level, dno_sprite):  # проверка на возможность движения

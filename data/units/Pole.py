@@ -25,7 +25,7 @@ class Board:  # класс пола
         self.cell_size = 0
         self.pole = [[random.choice(['golv', 'golv2', 'golv3']) for j in range(self.height)] for i in range(self.width)]
         self.txt_level = None
-        self.render_all_map()
+        self.render()
 
     def three_on_four(self, cord):  # отрисовка ближних обектов (4*4 вокруг персанажа
         x, y = cord[0] // 40, cord[1] // 40
@@ -52,7 +52,4 @@ class Board:  # класс пола
             for j in enumerate(i[1]):
                 self.screen.blit(consts.image[j[1]], (i[0] * 40, j[0] * 40))
 
-    def render_all_map(self):
-        for i in enumerate(self.pole):
-            for j in enumerate(i[1]):
-                self.screen.blit(consts.image[j[1]], (i[0] * 40, j[0] * 40))
+

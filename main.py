@@ -110,10 +110,10 @@ if __name__ == '__main__':
         global stop
         if stop:
             stop = False
-            board.render_all_map()
+            board.render()
         else:
             stop = True
-            board.render_all_map()
+            board.render()
             screen.blit(back, (0, 0))
             screen.blit(contin, (1220, 30))
 
@@ -125,7 +125,7 @@ if __name__ == '__main__':
                 elif stop and event.pos[0] in range(501, 779) and event.pos[1] in range(327, 367):
                     screen.blit(select2, (501, 327))
                 else:
-                    board.render_all_map()
+                    board.render()
                     screen.blit(back, (0, 0))
                     screen.blit(contin, (1220, 30))
             if event.type == pygame.QUIT:
@@ -169,6 +169,7 @@ if __name__ == '__main__':
 
         if not stop:
             board.three_on_four([person.rect.x, person.rect.y])
+            board.three_on_four([damager.rect.x, damager.rect.y])
             character_group.draw(screen)
             damager_group.update([person.rect.x,person.rect.y], txt_level, dno_sprite)
             character_group.update(txt_level, dno_sprite)
