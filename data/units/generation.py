@@ -1,13 +1,6 @@
 import random
 
-# from data.units.consts import LEFT,RIGHT,UP,DOWN
-
-
-RIGHT = '2'
-LEFT = '4'
-UP = '1'
-DOWN = '3'
-
+from data.units.consts import LEFT,RIGHT,UP,DOWN
 
 def gen_map():
     a = 5
