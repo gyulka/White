@@ -123,7 +123,6 @@ def Menu():
                 if sl_start:
                     li, lj = 2, 0
                     map_list, map_str = generation.gen_map()
-                    print(*map_list, sep='\n')
                     num_lvl = 1
                     li, lj = 2, 1
                     while li != 2 or lj != 5:
