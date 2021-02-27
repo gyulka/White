@@ -3,7 +3,7 @@ import random
 
 import pygame
 
-from data.units.consts import image, LEFT, UP, RIGHT, DOWN,V
+from data.units.consts import image, LEFT, UP, RIGHT, DOWN, V
 
 
 class Bullet(pygame.sprite.Sprite):  # класс пули
@@ -123,7 +123,6 @@ class Person(pygame.sprite.Sprite):  # класс игрока
         self.dno_pers = pygame.sprite.Group()
         self.dno_person = Dno_Pers(self.dno_pers)
 
-
     def kill(self) -> None:
         super().kill()
         self.dno_person.kill()
@@ -148,7 +147,7 @@ class Person(pygame.sprite.Sprite):  # класс игрока
 
     def down(self, event):  # кнопку отжали
         if event == 119:  # w
-            self.kak[1] =0
+            self.kak[1] = 0
             self.check_pictures[1] = 0
         if event == 97:  # a
             self.kak[0] = 0
@@ -284,14 +283,14 @@ class Damager(Person):
 
     def check_person_in_vier_sector(self, person, txt_level):
         if (self.rect.x // 40 - 2 <= person.rect.x // 40 <= self.rect.x // 40 + 2
-                and self.rect.y // 40 - 2 <= person.rect.y // 40 <= self.rect.y // 40 + 2) \
+            and self.rect.y // 40 - 2 <= person.rect.y // 40 <= self.rect.y // 40 + 2) \
                 or person.rect.x == self.rect.x or person.rect.y == self.rect.y:
             kuda = [person.rect.x, person.rect.y]
             otkuda = [self.rect.x, self.rect.y]
             try:
                 alfa = math.atan(
                     (kuda[0] - otkuda[0]) / (
-                                kuda[1] - otkuda[1]))  # нашли направление в градусной мере
+                            kuda[1] - otkuda[1]))  # нашли направление в градусной мере
                 self.kak = [
                     -2 * math.sin(alfa) * (otkuda[1] - kuda[1]) // abs(
                         otkuda[1] - kuda[1]),
@@ -332,7 +331,8 @@ class Damager(Person):
                 self.rect.y -= self.kak[1]
                 self.skolko_go = self.skolko_going
             self.dno_person.update(self.rect.x, self.rect.y)
-            if self.skolko_go == self.skolko_going and not self.check_person_in_vier_sector(self.person, self.txt_level):
+            if self.skolko_go == self.skolko_going and not self.check_person_in_vier_sector(self.person,
+                                                                                            self.txt_level):
                 self.skolko_go = random.randint(20, 30)
                 self.skolko_going = 0
                 self.kak = [random.choice([-2, 2, 0]), random.choice([-2, 2, 0])]
@@ -384,10 +384,13 @@ class Box(pygame.sprite.Sprite):  # класс обектов
         self.rect.h = 40
         self.rect.width = 40
         self.rect.height = 40
-        self.rect.x = int(pos[1]) * 40
-        self.rect.y = int(pos[0]) * 40 - 79
-        self.pos = self.rect
-        self.dop = 10
+        if len(self.pos) < 2:
+            self.kill()
+        else:
+            self.rect.x = int(pos[1]) * 40
+            self.rect.y = int(pos[0]) * 40 - 79
+            self.pos = self.rect
+            self.dop = 10
 
 
 class Dno(pygame.sprite.Sprite):  # класс хитбоксов обектов
@@ -399,7 +402,10 @@ class Dno(pygame.sprite.Sprite):  # класс хитбоксов обектов
         self.rect.h = 40
         self.rect.width = 40
         self.rect.height = 40
-        self.rect.x = int(pos[1]) * 40
-        self.rect.y = int(pos[0]) * 40 + dop
-        self.pos = self.rect
-        self.dop = 10
+        if len(pos) < 2:
+            self.kill()
+        else:
+            self.rect.x = int(pos[1]) * 40
+            self.rect.y = int(pos[0]) * 40 + dop
+            self.pos = self.rect
+            self.dop = 10
