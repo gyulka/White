@@ -1,11 +1,39 @@
-import pygame
 import random
+
+import pygame
 
 from data.units import generation
 from data.units.Pole import YAwareGroup, Board
 from data.units.classes import Bullet, Box, Dno, Wall, Dno_Pers, Damager, Person
-from data.units.generation import LEFT, RIGHT, UP, DOWN
 from data.units.consts import back, pause, contin
+from data.units.generation import LEFT, RIGHT, UP, DOWN
+
+
+def save():  # сохранение уровня
+    file = open('data/save.txt', 'w')
+    file.write(str(li) + ' ' + str(lj) + '\n')
+    file.write(f'{person.rect.x} {person.rect.y}\n')
+    ans = [' '.join(i) for i in map_list]
+    file.write('\n'.join(ans))
+    file.write('\n')
+    list_lvl[li][lj] = sum(map(lambda x: 0 if x.dead else 1, damagers))
+    ans = [' '.join(i) for i in list_lvl]
+    file.write('\n'.join(ans))
+    file.write('\n')
+    file.write(map_str)
+    file.close()
+
+
+def load():
+    global li, lj, map_list, list_lvl, map_str
+    file = open('data/save.txt', 'r')
+    text = file.read().split('\n')
+    li, lj = map(int, text[0].split())
+    x, y = map(int, text[1].split())
+    map_list = [[int(j) for j in text[i + 2].split()] for i in range(6)]
+    list_lvl = [[int(j) for j in text[i + 8].split()] for i in range(6)]
+    map_str = text[-1]
+    init_room(stroka=map_list[li][lj], coords=[x, y])
 
 
 def init_room(stroka='files/levels/0_2_1.txt', coords=[1280 // 2, 720 // 2], hp=100):
@@ -36,6 +64,7 @@ def init_room(stroka='files/levels/0_2_1.txt', coords=[1280 // 2, 720 // 2], hp=
     dno_person = Dno_Pers(dno_pers)
     person.rect.x, person.rect.y = coords
 
+
 def Pause():
     global stop
     if stop:
@@ -46,6 +75,7 @@ def Pause():
         board.render()
         screen.blit(back, (0, 0))
         screen.blit(contin, (1220, 30))
+
 
 def Menu():
     global sl_start, stop, board, li, lj, map_list, map_str, running, list_lvl, num_lvl, dead, anim
@@ -109,7 +139,6 @@ def Menu():
         num_lvl += 1
     li, lj = 2, 0
 
-
     init_room(map_list[li][lj])
 
 
@@ -121,7 +150,8 @@ if __name__ == '__main__':
     screen.fill((0, 0, 0))
     running = True
     #  ------------------------------------------- изображения...
-    logo = pygame.image.load(random.choice(['data/textures/Logo/logo3.png', 'data/textures/Logo/logo.png', 'data/textures/Logo/logo2.png']))
+    logo = pygame.image.load(
+        random.choice(['data/textures/Logo/logo3.png', 'data/textures/Logo/logo.png', 'data/textures/Logo/logo2.png']))
     manda_logo = pygame.image.load('data/textures/Logo/Mand.png')
     menu = pygame.image.load('data/textures/Logo/menu.png')
     select = pygame.image.load('data/textures/mini_object/select.png')
@@ -204,7 +234,7 @@ if __name__ == '__main__':
                     shooting = Bullet(bullet_group, damager_group, damager.rect, person.rect, screen, 0,
                                       to=character_group, txt_level=txt_level, dno_sprite=dno_sprite, board=board)
             # character_group.draw(screen)
-            damager_group.update([person.rect.x,person.rect.y], txt_level, dno_sprite)
+            damager_group.update([person.rect.x, person.rect.y], txt_level, dno_sprite)
             character_group.update(txt_level, dno_sprite)
             bullet_group.update(txt_level, dno_sprite)
             all_sprites.draw(screen)
