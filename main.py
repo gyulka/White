@@ -6,6 +6,13 @@ from data.units.Pole import YAwareGroup, Board
 from data.units.classes import Bullet, Box, Dno, Wall, Dno_Pers, Damager, Person
 from data.units.generation import LEFT, RIGHT, UP, DOWN
 from data.units.consts import back, pause, contin
+score = [0]
+try:
+    file = open('data/data.txt', 'r')
+    score[0] += int(file.read().rstrip('\n').split()[0])
+    file.close()
+except Exception:
+    pass
 
 #  ------------------------------- ... Музыка
 #  -------------------------------
@@ -63,13 +70,13 @@ def init_room(stroka='data/levels/0_2_1.txt', coords=[1280 // 2, 720 // 2], hp=1
     person = Person(all_sprites, character_group, board=board, hp=hp)
     damagers = list()
     for i in range(list_lvl[li][lj]):
-        damagers.append(Damager(all_sprites, damager_group, person, txt_level, dno_sprite, board=board))
+        damagers.append(Damager(all_sprites, damager_group, person, txt_level, dno_sprite, board=board, score=score))
     dno_person = Dno_Pers(dno_pers)
     person.rect.x, person.rect.y = coords
 
 
 def Menu():
-    global sl_start, stop, board, li, lj, map_list, map_str, running, list_lvl, num_lvl, dead, anim, winning, mus
+    global sl_start, stop, board, li, lj, map_list, map_str, running, list_lvl, num_lvl, dead, anim, winning, mus, file
     board = Board(screen, 1280, 720)
     list_lvl = [[0 for _ in range(6)] for i in range(6)]
     screen.blit(logo, (0, 0))
@@ -94,6 +101,9 @@ def Menu():
     while wh_game:
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
+                file = open('data/data.txt', 'w')
+                file.write(str(score[0]))
+                file.close()
                 wh_game = False
                 running = False
             if event.type == pygame.MOUSEMOTION:
@@ -130,6 +140,9 @@ def Menu():
                     wh_game = False
                     stop = False
                 elif ex:
+                    file = open('data/data.txt', 'w')
+                    file.write(str(score[0]))
+                    file.close()
                     wh_game = False
                     running = False
                 elif loading:
@@ -158,6 +171,8 @@ if __name__ == '__main__':
     damage = pygame.image.load('data/textures/mini_object/auh.png')
     the_end = pygame.image.load('data/textures/mini_object/the_end.png')
     win = pygame.image.load('data/textures/mini_object/win.png')
+    failed = pygame.image.load('data/textures/mini_object/not_coin.png')
+    saver = pygame.image.load('data/textures/mini_object/ok.png')
     #  -------------------------------------------
     Menu()
 
@@ -197,6 +212,9 @@ if __name__ == '__main__':
                         board.render()
                         screen.blit(win, (0, 0))
             if event.type == pygame.QUIT:
+                file = open('data/data.txt', 'w')
+                file.write(str(score[0]))
+                file.close()
                 running = False
             if event.type == pygame.MOUSEBUTTONDOWN:
                 if stop and event.pos[0] in range(501, 779) and event.pos[1] in range(327, 367):
@@ -207,6 +225,15 @@ if __name__ == '__main__':
                     Menu()
                 elif stop and event.pos[0] in range(540, 740) and event.pos[1] in range(379, 419):
                     save()
+                    screen.blit(saver, (0, 0))
+                elif dead and event.pos[0] in range(656, 934) and event.pos[1] in range(432, 471):
+                    if score[0] >= 150:
+                        score[0] -= 150
+                        person.hp = 100
+                        person.dead = False
+                        dead = False
+                    else:
+                        screen.blit(failed, (0, 0))
                 x = event.pos[0]
                 y = event.pos[1]
                 if event.button == 1:

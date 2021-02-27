@@ -44,7 +44,6 @@ class Board:  # класс пола
         flag = [[None for i in range(int(len(sector) ** 0.5))] for _ in range(int(len(sector) ** 0.5))]
         for elem in enumerate(sector):
             if f'{elem[1][1]} {elem[1][0]} box' in level or f'{elem[1][1]} {elem[1][0]} wall' in level:
-                print(elem[0], elem[1], elem[0] // int(len(sector) ** 0.5), elem[0] % int(len(sector) ** 0.5))
                 flag[elem[0] // int(len(sector) ** 0.5)][elem[0] % int(len(sector) ** 0.5)] = elem[1]
         return flag
 

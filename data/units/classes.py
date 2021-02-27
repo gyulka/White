@@ -229,7 +229,6 @@ class Person(pygame.sprite.Sprite):  # класс игрока
         self.hp -= value
         if self.hp <= 0:
             self.dead = True
-            self.kill()
 
     def can_anim_damage(self):
         if self.old_hp != self.hp:
@@ -256,8 +255,9 @@ class Damager(Person):  # класс противников
     damager_left1 = pygame.image.load('data/textures/not_friends/Shtoormovik_left_move1.png')
     damager_left2 = pygame.image.load('data/textures/not_friends/Shtoormovik_left_move2.png')
 
-    def __init__(self, all, vrag, person, txt_level, boxes, hp=30, pos=[620, 320], board=None, ):
+    def __init__(self, all, vrag, person, txt_level, boxes, hp=30, pos=[620, 320], board=None, score=[0]):
         super().__init__(all, vrag, hp, board)
+        self.score = score
         self.check_pictures = [0, 0, 0, 0]
         self.change_pictures = [0, 0, 0, 0]
         self.can_gun = 20
@@ -284,6 +284,13 @@ class Damager(Person):  # класс противников
         self.image = Damager.image
         self.dead = False
 
+    def get_damage(self, value):
+        self.old_hp = self.hp
+        self.hp -= value
+        if self.hp <= 0:
+            self.dead = True
+            self.kill()
+
     def can_shoot(self):
         if self.dead:
             return False
@@ -296,6 +303,7 @@ class Damager(Person):  # класс противников
     def kill(self) -> None:
         super().kill()
         self.dead = True
+        self.score[0] += random.randint(5, 10)
 
     def check_person_in_vier_sector(self, person, txt_level):
         if (self.rect.x // 40 - 2 <= person.rect.x // 40 <= self.rect.x // 40 + 2
