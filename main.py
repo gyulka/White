@@ -7,6 +7,9 @@ from data.units.classes import Bullet, Box, Dno, Wall, Dno_Pers, Damager, Person
 from data.units.generation import LEFT, RIGHT, UP, DOWN
 from data.units.consts import back, pause, contin
 
+#  ------------------------------- ... Музыка
+#  -------------------------------
+
 
 def save():  # сохранение уровня
     file = open('data/save.txt', 'w')
@@ -66,14 +69,18 @@ def init_room(stroka='data/levels/0_2_1.txt', coords=[1280 // 2, 720 // 2], hp=1
 
 
 def Menu():
-    global sl_start, stop, board, li, lj, map_list, map_str, running, list_lvl, num_lvl, dead, anim, winning
+    global sl_start, stop, board, li, lj, map_list, map_str, running, list_lvl, num_lvl, dead, anim, winning, mus
+    board = Board(screen, 1280, 720)
+    list_lvl = [[0 for _ in range(6)] for i in range(6)]
     screen.blit(logo, (0, 0))
+    pygame.mixer_music.load('data/ost/bobby-prince-the-imps-song.mp3')
+    pygame.mixer.music.play(loops=-1)
     timer = pygame.time.Clock()
     pygame.display.flip()
-    timer.tick(1)
+    timer.tick(0.5)
     screen.blit(manda_logo, (0, 0))
     pygame.display.flip()
-    timer.tick(1)
+    timer.tick(0.5)
     screen.blit(menu, (0, 0))
     pygame.display.flip()
     wh_game = True
@@ -83,8 +90,7 @@ def Menu():
     anim = False
     winning = False
     loading = False
-    board = Board(screen, 1280, 720)
-    list_lvl = [[0 for _ in range(6)] for i in range(6)]
+    mus = False
     while wh_game:
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
@@ -131,9 +137,7 @@ def Menu():
                     wh_game = False
                     stop = False
         pygame.display.flip()
-    screen.fill((255, 255, 255))
     board.render()
-
 
 if __name__ == '__main__':
     pygame.init()
@@ -238,6 +242,10 @@ if __name__ == '__main__':
             board.render()
 
         if not stop and not dead and not winning:
+            if not mus:
+                pygame.mixer_music.load('data/ost/bobby-prince-at-dooms-gate.mp3')
+                pygame.mixer.music.play(loops=-1)
+                mus = True
             if anim:
                 board.render()
                 anim = False
