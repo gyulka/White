@@ -80,13 +80,13 @@ class Bullet(pygame.sprite.Sprite):  # класс пули
             except Exception:
                 pass
 
-    def isshootedByPlayer(self):
-        return self.shootedby
-
-    def iscollidePlayer(self):
-        if pygame.sprite.spritecollideany(self, self.to):
-            return True
-        return False
+    # def isshootedByPlayer(self):
+    #     return self.shootedby
+    #
+    # def iscollidePlayer(self):
+    #     if pygame.sprite.spritecollideany(self, self.to):
+    #         return True
+    #     return False
 
 
 class Person(pygame.sprite.Sprite):  # класс игрока
@@ -242,16 +242,16 @@ class Person(pygame.sprite.Sprite):  # класс игрока
         return self.dead
 
 
-class Damager(Person):
+class Damager(Person):  # класс противников
     image = pygame.image.load('data/textures/not_friends/Shtoormovik.png')
-    mandalorian_up1 = pygame.image.load('data/textures/not_friends/Shtoormovik_move1.png')
-    mandalorian_up2 = pygame.image.load('data/textures/not_friends/Shtoormovik_move2.png')
-    mandalorian_down1 = pygame.image.load('data/textures/not_friends/Shtoormovik_move1.png')
-    mandalorian_down2 = pygame.image.load('data/textures/not_friends/Shtoormovik_move2.png')
-    mandalorian_right1 = pygame.image.load('data/textures/not_friends/Shtoormovik_right_move1.png')
-    mandalorian_right2 = pygame.image.load('data/textures/not_friends/Shtoormovik_right_move2.png')
-    mandalorian_left1 = pygame.image.load('data/textures/not_friends/Shtoormovik_left_move1.png')
-    mandalorian_left2 = pygame.image.load('data/textures/not_friends/Shtoormovik_left_move2.png')
+    damager_up1 = pygame.image.load('data/textures/not_friends/Shtoormovik_move1.png')
+    damager_up2 = pygame.image.load('data/textures/not_friends/Shtoormovik_move2.png')
+    damager_down1 = pygame.image.load('data/textures/not_friends/Shtoormovik_move1.png')
+    damager_down2 = pygame.image.load('data/textures/not_friends/Shtoormovik_move2.png')
+    damager_right1 = pygame.image.load('data/textures/not_friends/Shtoormovik_right_move1.png')
+    damager_right2 = pygame.image.load('data/textures/not_friends/Shtoormovik_right_move2.png')
+    damager_left1 = pygame.image.load('data/textures/not_friends/Shtoormovik_left_move1.png')
+    damager_left2 = pygame.image.load('data/textures/not_friends/Shtoormovik_left_move2.png')
 
     def __init__(self, all, vrag, person, txt_level, boxes, hp=30, pos=[620, 320], board=None, ):
         super().__init__(all, vrag, hp, board)
@@ -260,10 +260,10 @@ class Damager(Person):
         self.can_gun = 20
         self.person = person
         self.txt_level = txt_level
-        self.puctures1 = [Damager.mandalorian_left1, Damager.mandalorian_up1,
-                          Damager.mandalorian_right1, Damager.mandalorian_down1]
-        self.puctures2 = [Damager.mandalorian_left2, Damager.mandalorian_up2,
-                          Damager.mandalorian_right2, Damager.mandalorian_down2]
+        self.puctures1 = [Damager.damager_left1, Damager.damager_up1,
+                          Damager.damager_right1, Damager.damager_down1]
+        self.puctures2 = [Damager.damager_left2, Damager.damager_up2,
+                          Damager.damager_right2, Damager.damager_down2]
         self.rect.x = random.randint(40, 1200)
         self.rect.y = random.randint(40, 600)
         self.dno_person.rect.x = self.rect.x
@@ -278,7 +278,7 @@ class Damager(Person):
         self.kak = [random.choice([-2, 2, 0]), random.choice([-2, 2, 0])]
         if self.kak == [0, 0]:
             self.kak = [2, 0]
-        self.image = Damager.mandalorian_down2
+        self.image = Damager.image
         self.dead = False
 
     def can_shoot(self):

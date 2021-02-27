@@ -48,7 +48,7 @@ class Board:  # класс пола
                 flag[elem[0] // int(len(sector) ** 0.5)][elem[0] % int(len(sector) ** 0.5)] = elem[1]
         return flag
 
-    def render(self):
+    def render(self):  # отрисовка всего пола
         for i in enumerate(self.pole):
             for j in enumerate(i[1]):
                 self.screen.blit(consts.image[j[1]], (i[0] * 40, j[0] * 40))
