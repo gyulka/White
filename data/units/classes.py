@@ -241,6 +241,9 @@ class Person(pygame.sprite.Sprite):  # класс игрока
     def can_check_dead(self):
         return self.dead
 
+    def check_the_end(self):
+        return(self.rect.x + 20, self.rect.y + 80)
+
 
 class Damager(Person):  # класс противников
     image = pygame.image.load('data/textures/not_friends/Shtoormovik.png')
@@ -397,10 +400,13 @@ class Box(pygame.sprite.Sprite):  # класс обектов
         self.rect.h = 40
         self.rect.width = 40
         self.rect.height = 40
-        self.rect.x = int(pos[1]) * 40
-        self.rect.y = int(pos[0]) * 40 - 79
-        self.pos = self.rect
-        self.dop = 10
+        if len(pos) < 2:
+            self.kill()
+        else:
+            self.rect.x = int(pos[1]) * 40
+            self.rect.y = int(pos[0]) * 40 - 79
+            self.pos = self.rect
+            self.dop = 10
 
 
 class Dno(pygame.sprite.Sprite):  # класс хитбоксов обектов
@@ -412,7 +418,10 @@ class Dno(pygame.sprite.Sprite):  # класс хитбоксов обектов
         self.rect.h = 40
         self.rect.width = 40
         self.rect.height = 40
-        self.rect.x = int(pos[1]) * 40
-        self.rect.y = int(pos[0]) * 40 + dop
-        self.pos = self.rect
-        self.dop = 10
+        if len(pos) < 2:
+            self.kill()
+        else:
+            self.rect.x = int(pos[1]) * 40
+            self.rect.y = int(pos[0]) * 40 + dop
+            self.pos = self.rect
+            self.dop = 10

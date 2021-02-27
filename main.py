@@ -1,23 +1,22 @@
-import random
-
 import pygame
+import random
 
 from data.units import generation
 from data.units.Pole import YAwareGroup, Board
 from data.units.classes import Bullet, Box, Dno, Wall, Dno_Pers, Damager, Person
-from data.units.consts import back, pause, contin
 from data.units.generation import LEFT, RIGHT, UP, DOWN
+from data.units.consts import back, pause, contin
 
 
 def save():  # сохранение уровня
     file = open('data/save.txt', 'w')
     file.write(str(li) + ' ' + str(lj) + '\n')
     file.write(f'{person.rect.x} {person.rect.y}\n')
-    ans = [' '.join(i) for i in map_list]
+    ans = [' '.join(map(str, i)) for i in map_list]
     file.write('\n'.join(ans))
     file.write('\n')
     list_lvl[li][lj] = sum(map(lambda x: 0 if x.dead else 1, damagers))
-    ans = [' '.join(i) for i in list_lvl]
+    ans = [' '.join(map(str, i)) for i in list_lvl]
     file.write('\n'.join(ans))
     file.write('\n')
     file.write(map_str)
@@ -30,13 +29,14 @@ def load():
     text = file.read().split('\n')
     li, lj = map(int, text[0].split())
     x, y = map(int, text[1].split())
-    map_list = [[int(j) for j in text[i + 2].split()] for i in range(6)]
+    map_list = [text[i + 2].split() for i in range(6)]
     list_lvl = [[int(j) for j in text[i + 8].split()] for i in range(6)]
     map_str = text[-1]
     init_room(stroka=map_list[li][lj], coords=[x, y])
+    file.close()
 
 
-def init_room(stroka='files/levels/0_2_1.txt', coords=[1280 // 2, 720 // 2], hp=100):
+def init_room(stroka='data/levels/0_2_1.txt', coords=[1280 // 2, 720 // 2], hp=100):
     global all_sprites, character_group, dno_pers, dno_sprite, box_spites, bullet_group, level, txt_level, boxes, person, dno_person, damager_group, damagers, num_lvl
     all_sprites = YAwareGroup()
     character_group = pygame.sprite.Group()
@@ -65,20 +65,8 @@ def init_room(stroka='files/levels/0_2_1.txt', coords=[1280 // 2, 720 // 2], hp=
     person.rect.x, person.rect.y = coords
 
 
-def Pause():
-    global stop
-    if stop:
-        stop = False
-        board.render()
-    else:
-        stop = True
-        board.render()
-        screen.blit(back, (0, 0))
-        screen.blit(contin, (1220, 30))
-
-
 def Menu():
-    global sl_start, stop, board, li, lj, map_list, map_str, running, list_lvl, num_lvl, dead, anim
+    global sl_start, stop, board, li, lj, map_list, map_str, running, list_lvl, num_lvl, dead, anim, winning
     screen.blit(logo, (0, 0))
     timer = pygame.time.Clock()
     pygame.display.flip()
@@ -93,6 +81,10 @@ def Menu():
     ex = False
     dead = False
     anim = False
+    winning = False
+    loading = False
+    board = Board(screen, 1280, 720)
+    list_lvl = [[0 for _ in range(6)] for i in range(6)]
     while wh_game:
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
@@ -104,7 +96,7 @@ def Menu():
                     sl_start = True
                 elif event.pos[0] in range(1048, 1248) and event.pos[1] in range(658, 698):
                     screen.blit(select, (1048, 658))
-                    sl_start = True
+                    loading = True
                 elif event.pos[0] in range(8, 155) and event.pos[1] in range(667, 712):
                     screen.blit(select3, (8, 667))
                     ex = True
@@ -113,33 +105,34 @@ def Menu():
                     sl_start = False
             if event.type == pygame.MOUSEBUTTONDOWN:
                 if sl_start:
+                    li, lj = 2, 0
+                    map_list, map_str = generation.gen_map()
+                    print(*map_list, sep='\n')
+                    num_lvl = 1
+                    li, lj = 2, 1
+                    while li != 2 or lj != 5:
+                        list_lvl[li][lj] = num_lvl
+                        if map_str[num_lvl - 1] == '1':
+                            li -= 1
+                        elif map_str[num_lvl - 1] == '2':
+                            lj += 1
+                        else:
+                            li += 1
+                        num_lvl += 1
+                    li, lj = 2, 0
+                    init_room(map_list[li][lj])
                     wh_game = False
                     stop = False
                 elif ex:
                     wh_game = False
                     running = False
+                elif loading:
+                    load()
+                    wh_game = False
+                    stop = False
         pygame.display.flip()
     screen.fill((255, 255, 255))
-    board = Board(screen, 1280, 720)
-
-    li, lj = 2, 0
-    map_list, map_str = generation.gen_map()
-    print(*map_list, sep='\n')
-    num_lvl = 1
-    list_lvl = [[0 for _ in range(6)] for i in range(6)]
-    li, lj = 2, 1
-    while li != 2 or lj != 5:
-        list_lvl[li][lj] = num_lvl
-        if map_str[num_lvl - 1] == '1':
-            li -= 1
-        elif map_str[num_lvl - 1] == '2':
-            lj += 1
-        else:
-            li += 1
-        num_lvl += 1
-    li, lj = 2, 0
-
-    init_room(map_list[li][lj])
+    board.render()
 
 
 if __name__ == '__main__':
@@ -150,8 +143,7 @@ if __name__ == '__main__':
     screen.fill((0, 0, 0))
     running = True
     #  ------------------------------------------- изображения...
-    logo = pygame.image.load(
-        random.choice(['data/textures/Logo/logo3.png', 'data/textures/Logo/logo.png', 'data/textures/Logo/logo2.png']))
+    logo = pygame.image.load(random.choice(['data/textures/Logo/logo3.png', 'data/textures/Logo/logo.png', 'data/textures/Logo/logo2.png']))
     manda_logo = pygame.image.load('data/textures/Logo/Mand.png')
     menu = pygame.image.load('data/textures/Logo/menu.png')
     select = pygame.image.load('data/textures/mini_object/select.png')
@@ -160,8 +152,21 @@ if __name__ == '__main__':
     hp_picture = pygame.image.load('data/textures/mini_object/Hp.png')
     mand_dead = pygame.image.load('data/textures/mini_object/infa_dead.png')
     damage = pygame.image.load('data/textures/mini_object/auh.png')
+    the_end = pygame.image.load('data/textures/mini_object/the_end.png')
+    win = pygame.image.load('data/textures/mini_object/win.png')
     #  -------------------------------------------
     Menu()
+
+    def Pause():
+        global stop
+        if stop:
+            stop = False
+            board.render()
+        else:
+            stop = True
+            board.render()
+            screen.blit(back, (0, 0))
+            screen.blit(contin, (1220, 30))
 
     while running:
         for event in pygame.event.get():
@@ -174,6 +179,8 @@ if __name__ == '__main__':
                     screen.blit(select2, (346, 432))
                 elif dead and event.pos[0] in range(656, 934) and event.pos[1] in range(432, 471):
                     screen.blit(select2, (656, 432))
+                elif winning and event.pos[0] in range(501, 779) and event.pos[1] in range(419, 458):
+                    screen.blit(select2, (501, 419))
                 else:
                     if stop:
                         board.render()
@@ -182,6 +189,9 @@ if __name__ == '__main__':
                     if dead:
                         board.render()
                         screen.blit(mand_dead, (0, 0))
+                    if winning:
+                        board.render()
+                        screen.blit(win, (0, 0))
             if event.type == pygame.QUIT:
                 running = False
             if event.type == pygame.MOUSEBUTTONDOWN:
@@ -189,17 +199,21 @@ if __name__ == '__main__':
                     Menu()
                 elif dead and event.pos[0] in range(346, 624) and event.pos[1] in range(432, 471):
                     Menu()
+                elif winning and event.pos[0] in range(501, 779) and event.pos[1] in range(419, 458):
+                    Menu()
+                elif stop and event.pos[0] in range(540, 740) and event.pos[1] in range(379, 419):
+                    save()
                 x = event.pos[0]
                 y = event.pos[1]
                 if event.button == 1:
-                    if x in range(1220, 1251) and y in range(30, 51) and not dead:
+                    if x in range(1220, 1251) and y in range(30, 51) and not dead and not winning:
                         Pause()
-                    elif x not in range(1220, 1251) and y not in range(30, 51) and not stop and not dead:
+                    elif x not in range(1220, 1251) and y not in range(30, 51) and not stop and not dead and not winning:
                         shooting = Bullet(bullet_group, character_group, person.rect, event.pos, screen, event,
                                           to=damager_group, txt_level=txt_level, dno_sprite=dno_sprite, board=board)
             if event.type == pygame.KEYDOWN:
                 person.move(event.key)
-                if event.key == 27:
+                if event.key == 27 and not dead and not winning:
                     Pause()
             if event.type == pygame.KEYUP:
                 person.down(event.key)
@@ -223,7 +237,7 @@ if __name__ == '__main__':
             init_room(level, coord, person.hp)
             board.render()
 
-        if not stop and not dead:
+        if not stop and not dead and not winning:
             if anim:
                 board.render()
                 anim = False
@@ -234,9 +248,14 @@ if __name__ == '__main__':
                     shooting = Bullet(bullet_group, damager_group, damager.rect, person.rect, screen, 0,
                                       to=character_group, txt_level=txt_level, dno_sprite=dno_sprite, board=board)
             # character_group.draw(screen)
-            damager_group.update([person.rect.x, person.rect.y], txt_level, dno_sprite)
+            damager_group.update([person.rect.x,person.rect.y], txt_level, dno_sprite)
             character_group.update(txt_level, dno_sprite)
             bullet_group.update(txt_level, dno_sprite)
+            if li == 2 and lj == 5:
+                screen.blit(the_end, (600, 320))
+                cord = person.check_the_end()
+                if cord[0] in range(600, 681) and cord[1] in range(320, 401):
+                    winning = True
             all_sprites.draw(screen)
             bullet_group.draw(screen)
             pygame.draw.rect(screen, (25, 25, 25), [10, 10, 200, 20])
@@ -250,5 +269,8 @@ if __name__ == '__main__':
                 board.render()
                 screen.blit(mand_dead, (0, 0))
                 dead = True
+            if winning:
+                board.render()
+                screen.blit(win, (0, 0))
         pygame.display.flip()
     pygame.quit()
