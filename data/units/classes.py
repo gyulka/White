@@ -98,9 +98,11 @@ class Person(pygame.sprite.Sprite):  # класс игрока
     mandalorian_right2 = pygame.image.load('data/textures/main_charachter_1/Mandalorian_right_move2.png')
     mandalorian_left1 = pygame.image.load('data/textures/main_charachter_1/Mandalorian_left_move1.png')
     mandalorian_left2 = pygame.image.load('data/textures/main_charachter_1/Mandalorian_left_move2.png')
+    damage = pygame.image.load('data/textures/mini_object/auh.png')
 
     def __init__(self, group, person, hp=100, board=None):
         super().__init__(group)
+        self.old_hp = hp
         self.board = board
         self.add(person)
         self.dead = False
@@ -223,10 +225,21 @@ class Person(pygame.sprite.Sprite):  # класс игрока
             self.dno_person.update(self.rect.x, self.rect.y)
 
     def get_damage(self, value):
+        self.old_hp = self.hp
         self.hp -= value
         if self.hp <= 0:
             self.dead = True
             self.kill()
+
+    def can_anim_damage(self):
+        if self.old_hp != self.hp:
+            self.old_hp = self.hp
+            return True
+        else:
+            return False
+
+    def can_check_dead(self):
+        return self.dead
 
 
 class Damager(Person):
@@ -384,13 +397,10 @@ class Box(pygame.sprite.Sprite):  # класс обектов
         self.rect.h = 40
         self.rect.width = 40
         self.rect.height = 40
-        if len(self.pos) < 2:
-            self.kill()
-        else:
-            self.rect.x = int(pos[1]) * 40
-            self.rect.y = int(pos[0]) * 40 - 79
-            self.pos = self.rect
-            self.dop = 10
+        self.rect.x = int(pos[1]) * 40
+        self.rect.y = int(pos[0]) * 40 - 79
+        self.pos = self.rect
+        self.dop = 10
 
 
 class Dno(pygame.sprite.Sprite):  # класс хитбоксов обектов
@@ -402,10 +412,7 @@ class Dno(pygame.sprite.Sprite):  # класс хитбоксов обектов
         self.rect.h = 40
         self.rect.width = 40
         self.rect.height = 40
-        if len(pos) < 2:
-            self.kill()
-        else:
-            self.rect.x = int(pos[1]) * 40
-            self.rect.y = int(pos[0]) * 40 + dop
-            self.pos = self.rect
-            self.dop = 10
+        self.rect.x = int(pos[1]) * 40
+        self.rect.y = int(pos[0]) * 40 + dop
+        self.pos = self.rect
+        self.dop = 10

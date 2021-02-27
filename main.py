@@ -37,10 +37,8 @@ def init_room(stroka='files/levels/0_2_1.txt', coords=[1280 // 2, 720 // 2], hp=
     person.rect.x, person.rect.y = coords
 
 
-
 def Menu():
-    global sl_start, stop, board, li, lj, map_list, map_str, running, list_lvl, num_lvl
-
+    global sl_start, stop, board, li, lj, map_list, map_str, running, list_lvl, num_lvl, dead, anim
     screen.blit(logo, (0, 0))
     timer = pygame.time.Clock()
     pygame.display.flip()
@@ -53,6 +51,8 @@ def Menu():
     wh_game = True
     sl_start = False
     ex = False
+    dead = False
+    anim = False
     while wh_game:
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
@@ -117,6 +117,9 @@ if __name__ == '__main__':
     select = pygame.image.load('data/textures/mini_object/select.png')
     select2 = pygame.image.load('data/textures/mini_object/select2.png')
     select3 = pygame.image.load('data/textures/mini_object/select3.png')
+    hp_picture = pygame.image.load('data/textures/mini_object/Hp.png')
+    mand_dead = pygame.image.load('data/textures/mini_object/infa_dead.png')
+    damage = pygame.image.load('data/textures/mini_object/auh.png')
     #  -------------------------------------------
     Menu()
 
@@ -133,26 +136,36 @@ if __name__ == '__main__':
 
     while running:
         for event in pygame.event.get():
-            if event.type == pygame.MOUSEMOTION and stop:
+            if event.type == pygame.MOUSEMOTION:
                 if stop and event.pos[0] in range(540, 740) and event.pos[1] in range(379, 419):
                     screen.blit(select, (540, 379))
                 elif stop and event.pos[0] in range(501, 779) and event.pos[1] in range(327, 367):
                     screen.blit(select2, (501, 327))
+                elif dead and event.pos[0] in range(346, 624) and event.pos[1] in range(432, 471):
+                    screen.blit(select2, (346, 432))
+                elif dead and event.pos[0] in range(656, 934) and event.pos[1] in range(432, 471):
+                    screen.blit(select2, (656, 432))
                 else:
-                    board.render()
-                    screen.blit(back, (0, 0))
-                    screen.blit(contin, (1220, 30))
+                    if stop:
+                        board.render()
+                        screen.blit(back, (0, 0))
+                        screen.blit(contin, (1220, 30))
+                    if dead:
+                        board.render()
+                        screen.blit(mand_dead, (0, 0))
             if event.type == pygame.QUIT:
                 running = False
             if event.type == pygame.MOUSEBUTTONDOWN:
                 if stop and event.pos[0] in range(501, 779) and event.pos[1] in range(327, 367):
                     Menu()
+                elif dead and event.pos[0] in range(346, 624) and event.pos[1] in range(432, 471):
+                    Menu()
                 x = event.pos[0]
                 y = event.pos[1]
                 if event.button == 1:
-                    if x in range(1220, 1251) and y in range(30, 51):
+                    if x in range(1220, 1251) and y in range(30, 51) and not dead:
                         Pause()
-                    elif x not in range(1220, 1251) and y not in range(30, 51) and not stop:
+                    elif x not in range(1220, 1251) and y not in range(30, 51) and not stop and not dead:
                         shooting = Bullet(bullet_group, character_group, person.rect, event.pos, screen, event,
                                           to=damager_group, txt_level=txt_level, dno_sprite=dno_sprite, board=board)
             if event.type == pygame.KEYDOWN:
@@ -181,10 +194,10 @@ if __name__ == '__main__':
             init_room(level, coord, person.hp)
             board.render()
 
-        if person.dead:
-            pass
-
-        if not stop:
+        if not stop and not dead:
+            if anim:
+                board.render()
+                anim = False
             board.three_on_four([person.rect.x, person.rect.y])
             for damager in damagers:
                 board.three_on_four([damager.rect.x, damager.rect.y])
@@ -199,8 +212,14 @@ if __name__ == '__main__':
             bullet_group.draw(screen)
             pygame.draw.rect(screen, (25, 25, 25), [10, 10, 200, 20])
             pygame.draw.rect(screen, (255, 20, 25), [10, 10, (person.hp * 2), 20])
-            hp_picture = pygame.image.load('data/textures/mini_object/Hp.png')
             screen.blit(hp_picture, (10, 10))
             screen.blit(pause, (1220, 30))
+            if person.can_anim_damage():
+                screen.blit(damage, (0, 0))
+                anim = True
+            if person.can_check_dead():
+                board.render()
+                screen.blit(mand_dead, (0, 0))
+                dead = True
         pygame.display.flip()
     pygame.quit()
