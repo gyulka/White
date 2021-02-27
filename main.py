@@ -36,6 +36,16 @@ def init_room(stroka='files/levels/0_2_1.txt', coords=[1280 // 2, 720 // 2], hp=
     dno_person = Dno_Pers(dno_pers)
     person.rect.x, person.rect.y = coords
 
+def Pause():
+    global stop
+    if stop:
+        stop = False
+        board.render()
+    else:
+        stop = True
+        board.render()
+        screen.blit(back, (0, 0))
+        screen.blit(contin, (1220, 30))
 
 def Menu():
     global sl_start, stop, board, li, lj, map_list, map_str, running, list_lvl, num_lvl, dead, anim
@@ -122,17 +132,6 @@ if __name__ == '__main__':
     damage = pygame.image.load('data/textures/mini_object/auh.png')
     #  -------------------------------------------
     Menu()
-
-    def Pause():
-        global stop
-        if stop:
-            stop = False
-            board.render()
-        else:
-            stop = True
-            board.render()
-            screen.blit(back, (0, 0))
-            screen.blit(contin, (1220, 30))
 
     while running:
         for event in pygame.event.get():
